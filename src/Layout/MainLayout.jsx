@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
 import Headers from "./Headers";
 import Sidebar from "./Sidebar";
 
-const MainLayout = ({ children }) => {
+const MainLayout = () => {
   const [show, setShow] = useState(false);
   const showHide = () => {
     setShow(!show);
@@ -15,7 +16,9 @@ const MainLayout = ({ children }) => {
         className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-gray-100"
       >
         <Headers showHide={showHide} />
-        <main className="p-2 ">{children}</main>
+        <main className="p-2 ">
+          <Outlet />
+        </main>
       </div>
     </div>
   );

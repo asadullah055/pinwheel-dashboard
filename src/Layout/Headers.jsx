@@ -17,13 +17,12 @@ const Headers = ({ showHide }) => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <button className="p-2 bg-gray-200 rounded-full">🔔</button>
           <img
             src="https://via.placeholder.com/40"
             alt="User profile"
             className="rounded-full w-10 h-10"
           />
-          <span>Thomas Anree</span>
+          <span className="hidden md:inline-block ">Thomas Anree</span>
         </div>
       </header>
     </div>

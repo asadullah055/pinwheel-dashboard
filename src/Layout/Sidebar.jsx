@@ -15,7 +15,7 @@ const Sidebar = ({ show }) => {
 
   return (
     <aside
-      className={`h-screen absolute left-0 top-0 bg-[#1C2434] md:static text-white w-64 md:translate-x-0 transition-all duration-300 ${
+      className={`h-screen absolute z-[99] left-0 top-0 bg-[#1C2434] md:static text-white w-64 md:translate-x-0 transition-all duration-300 ${
         show ? "-translate-x-0" : "-translate-x-full"
       } flex flex-col `}
     >

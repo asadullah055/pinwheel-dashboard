@@ -1,20 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 // ---style.css---
 
-
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      fontFamily:{
-        "raleway":["Raleway", "sans-serif"]
+      fontFamily: {
+        raleway: ["Raleway", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
       },
+    },
   },
-},
   // eslint-disable-next-line no-undef
-  plugins: [require('daisyui'),],
-}
-
+  plugins: [require("daisyui")],
+};
