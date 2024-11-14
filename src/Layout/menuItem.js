@@ -54,7 +54,7 @@ export const navMenu = [
     child: [
       {
         id: "4-1",
-        title: "Add Category",
+        title: "Add Product",
         path: "/product/create",
       },
       {

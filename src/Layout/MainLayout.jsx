@@ -5,14 +5,15 @@ import Sidebar from "./Sidebar";
 
 const MainLayout = () => {
   const [show, setShow] = useState(false);
-  const showHide = () => {
+  const showHide = (e) => {
+    e.stopPropagation();
     setShow(!show);
   };
   return (
     <div className="flex h-screen">
       <Sidebar showHide={showHide} show={show} />
       <div
-        onClick={showHide}
+        onClick={() => setShow(false)}
         className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden bg-gray-100"
       >
         <Headers showHide={showHide} />

@@ -1,7 +1,7 @@
 import React from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
-import CategoryList from "./CategoryList";
+import CategoryList from "../../components/Category/CategoryList";
 
 const Category = () => {
   return (

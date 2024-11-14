@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import SingleBrand from "./SingleBrand";
-import { brand } from "./brandData";
+import { category } from "../../pages/Category/categoryData";
+import SingleCategory from "./SingleCategory";
 
-const BrandList = () => {
-  const [brands, setBrands] = useState(brand);
+const CategoryList = () => {
+  const [categorys, setCategorys] = useState(category);
   return (
     <table className="table static">
       <thead className="text-[#111] text-[16px]">
@@ -35,12 +35,12 @@ const BrandList = () => {
         </tr>
       </thead>
       <tbody>
-        {brands.map((brand) => (
-          <SingleBrand key={brand.id} brand={brand} />
+        {categorys.map((category) => (
+          <SingleCategory key={category.id} category={category} />
         ))}
       </tbody>
     </table>
   );
 };
 
-export default BrandList;
+export default CategoryList;

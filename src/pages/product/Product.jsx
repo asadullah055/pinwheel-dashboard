@@ -1,22 +1,22 @@
 import React from "react";
-import OrderList from "../../components/Order/OrderList";
+import ProductList from "../../components/Product/ProductList";
 
-const Order = () => {
+const Product = () => {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="font-semibold text-2xl">Order List</h3>
-          <p className="text-sm py-1">Manage your Order</p>
+          <h3 className="font-semibold text-2xl">Product List</h3>
+          <p className="text-sm py-1">Manage your Product</p>
         </div>
       </div>
       <div className="bg-white p-2 rounded-md">
         <div className="overflow-x-auto">
-          <OrderList />
+          <ProductList />
         </div>
       </div>
     </div>
   );
 };
 
-export default Order;
+export default Product;

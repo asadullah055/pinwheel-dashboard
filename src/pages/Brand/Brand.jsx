@@ -1,7 +1,7 @@
 import React from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
-import BrandList from "./BrandList";
+import BrandList from "../../components/Brand/BrandList";
 
 const Brand = () => {
   return (

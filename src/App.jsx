@@ -8,12 +8,13 @@ import CreateUpdateBrand from "./pages/Brand/CreateUpdateBrand";
 import Category from "./pages/Category/Category";
 import CreateUpdateCategory from "./pages/Category/CreateUpdateCategory";
 import Order from "./pages/order/Order";
+import CreateUpdateProduct from "./pages/product/CreateUpdateProduct";
+import Product from "./pages/product/Product";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Routes with MainLayout */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Dashnoard />} />
           <Route path="category/create" element={<CreateUpdateCategory />} />
@@ -21,6 +22,8 @@ function App() {
           <Route path="brand/create" element={<CreateUpdateBrand />} />
           <Route path="brand/list" element={<Brand />} />
           <Route path="order/list" element={<Order />} />
+          <Route path="product/list" element={<Product />} />
+          <Route path="/product/create" element={<CreateUpdateProduct />} />
         </Route>
 
         {/* Route without MainLayout */}
