@@ -15,12 +15,12 @@ const Sidebar = ({ show }) => {
 
   return (
     <aside
-      className={`h-screen absolute z-[99] left-0 top-0 bg-[#1C2434] md:static text-white w-64 md:translate-x-0 transition-all duration-300 ${
+      className={`h-screen absolute z-99 left-0 top-0 bg-[#1C2434] md:static text-white w-64 md:translate-x-0 transition-all duration-300 ${
         show ? "-translate-x-0" : "-translate-x-full"
       } flex flex-col `}
     >
-      <div className="text-2xl font-bold p-4 rounded">
-        <img className="rounded" src="/image/logo.png" alt="Logo" />
+      <div className="text-2xl font-bold p-4 rounded-sm">
+        <img className="rounded-sm" src="/image/logo.png" alt="Logo" />
       </div>
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         <nav className="flex-1 px-4">

@@ -6,37 +6,39 @@ const OrderList = () => {
       <thead className="text-[#111] text-[16px]">
         <tr>
           <th scope="col" className="py-3 px-4 w-10 ">
+            {/*  <input
+              type="checkbox"
+              className="checkbox-warning  checkbox checkbox-md rounded-xs border-gray-400"
+            /> */}
             <input
               type="checkbox"
-              className="checkbox-warning h-4 w-4 checkbox rounded-sm border-gray-400"
+              className="checkbox checkbox-warning rounded-xs border-gray-400 checkbox-xs"
             />
           </th>
           <th scope="col" className="py-3 px-4">
-          Order ID
+            Order ID
           </th>
           <th scope="col" className="py-3 px-4">
-          Order Date
+            Order Date
           </th>
           <th scope="col" className="py-3 px-4">
-          Customer info
+            Customer info
           </th>
           <th scope="col" className="py-3 px-4">
-          Quantity
+            Quantity
           </th>
           <th scope="col" className="py-3 px-4">
-          Total amount
+            Total amount
           </th>
           <th scope="col" className="py-3 px-4">
-          Order Status
+            Order Status
           </th>
           <th scope="col" className="py-3 px-4">
             Action
           </th>
         </tr>
       </thead>
-      <tbody>
-        
-      </tbody>
+      <tbody></tbody>
     </table>
   );
 };

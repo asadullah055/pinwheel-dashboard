@@ -30,10 +30,10 @@ const BrandList = () => {
         <thead className="text-[#111] text-[16px]">
           <tr>
             <th scope="col" className="py-3 px-4 w-10 ">
-              <input
-                type="checkbox"
-                className="checkbox-warning h-4 w-4 checkbox rounded-sm border-gray-400"
-              />
+            <input
+          type="checkbox"
+          className="checkbox  rounded-xs border-gray-600 checkbox-xs"
+        />
             </th>
             <th scope="col" className="py-3 px-4">
               Name

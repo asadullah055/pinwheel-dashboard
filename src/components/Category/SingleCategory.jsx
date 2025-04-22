@@ -7,7 +7,7 @@ const SingleCategory = ({ category }) => {
       <td scope="col" className="py-3 px-4 w-10 ">
         <input
           type="checkbox"
-          className="checkbox-warning h-4 w-4 checkbox rounded-sm border-gray-400"
+          className="checkbox  rounded-xs border-gray-600 checkbox-xs"
         />
       </td>
       <td scope="col" className="py-3 px-4">

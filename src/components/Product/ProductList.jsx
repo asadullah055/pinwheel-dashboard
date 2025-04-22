@@ -8,7 +8,7 @@ const ProductList = () => {
           <th scope="col" className="py-3 px-4 w-10 ">
             <input
               type="checkbox"
-              className="checkbox-warning h-4 w-4 checkbox rounded-sm border-gray-400"
+              className="checkbox-warning h-4 w-4 checkbox rounded-xs border-gray-400"
             />
           </th>
           <th scope="col" className="py-3 px-4 w-1/3">
@@ -41,7 +41,7 @@ const ProductList = () => {
           <td scope="col" className="py-3 px-4 w-10 ">
             <input
               type="checkbox"
-              className="checkbox-warning h-4 w-4 checkbox rounded-sm border-gray-400"
+              className="checkbox-warning h-4 w-4 checkbox rounded-xs border-gray-400"
             />
           </td>
           <td scope="col" className="py-3 px-4  w-1/3">

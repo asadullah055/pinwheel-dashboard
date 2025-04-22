@@ -4,7 +4,7 @@ import { FiMenu } from "react-icons/fi";
 const Headers = ({ showHide }) => {
   return (
     <div className="sticky top-0 z-999 flex w-full bg-white drop-shadow-1">
-      <header className="flex flex-grow items-center justify-between px-4 py-4 shadow-2">
+      <header className="flex grow items-center justify-between px-4 py-4 shadow-2">
         <div className="flex gap-2">
           <button className="md:hidden block text-2xl" onClick={showHide}>
             <FiMenu />
@@ -12,7 +12,7 @@ const Headers = ({ showHide }) => {
           <input
             type="text"
             placeholder="Type to search..."
-            className="border rounded p-2 "
+            className="border rounded-sm p-2 "
           />
         </div>
 

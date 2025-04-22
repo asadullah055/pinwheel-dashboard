@@ -55,7 +55,7 @@ const Pagination = ({
         id="perPage"
         value={perPage}
         onChange={(e) => onPerPageChange(Number(e.target.value))}
-        className="border rounded px-2 py-1 bg-white focus:outline-none"
+        className="border rounded-sm px-2 py-1 bg-white focus:outline-hidden"
       >
         <option value={5}>5</option>
         <option value={10}>10</option>
@@ -67,7 +67,7 @@ const Pagination = ({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="rounded p-3 cursor-pointer  bg-white disabled:opacity-50 hover:bg-blue-500 hover:text-white"
+          className="rounded-sm p-3 cursor-pointer  bg-white disabled:opacity-50 hover:bg-blue-500 hover:text-white"
         >
           <IoIosArrowBack size={20} />
         </button>

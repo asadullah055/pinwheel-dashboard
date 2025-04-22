@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BsImage } from "react-icons/bs";
 
-const CreateUpdateBrand = () => {
+const CreateCategory = () => {
   const [imageShow, setImage] = useState("");
   const [state, setState] = useState({
     name: "",
@@ -23,18 +23,18 @@ const CreateUpdateBrand = () => {
   };
   return (
     <div className="w-full md:w-3/4 lg:w-1/2 mx-auto p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-[24px] font-semibold text-[#111] ">Add Brand</h2>
+      <h2 className="text-[24px] font-semibold text-[#111] ">Add Category</h2>
       <form onSubmit={handleSubmitOrEdit} className="pt-1">
         <div className="mb-4">
           <label className="block text-[17px] font-semibold text-[#111] mb-1">
-            Brand Name <span className="text-red-500">*</span>
+            Category Name <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
-            placeholder="brand name"
+            placeholder="Category name"
             value={state.name}
             onChange={(e) => setState({ ...state, name: e.target.value })}
-            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500"
+            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:border-blue-500"
             required
           />
         </div>
@@ -47,7 +47,7 @@ const CreateUpdateBrand = () => {
           <div className="flex justify-center">
             <div>
               <label
-                className="flex justify-center items-center flex-col h-[200px] w-[250px] cursor-pointer border-2 border-dashed rounded  border-[#d0d2d6]"
+                className="flex justify-center items-center flex-col h-[200px] w-[250px] cursor-pointer border-2 border-dashed rounded-sm  border-[#d0d2d6]"
                 htmlFor="image"
               >
                 {imageShow ? (
@@ -75,7 +75,7 @@ const CreateUpdateBrand = () => {
 
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none "
+          className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-hidden "
         >
           Upload
         </button>
@@ -84,4 +84,4 @@ const CreateUpdateBrand = () => {
   );
 };
 
-export default CreateUpdateBrand;
+export default CreateCategory;
