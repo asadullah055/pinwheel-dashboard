@@ -1,9 +1,11 @@
 import axios from "axios";
-const URL = process.env.NODE_ENV === "development" ? "http://localhost:8000/api" : "https://pinwheel-server.vercel.app/";
+
+const productionURL = "https://pinwheel-server.vercel.app/api"
+const local = "http://localhost:8000/api"
 // Create an Axios instance
 const axiosInstance = axios.create({
-  baseURL: URL, // Base URL for the API
-  withCredentials: true, // Include credentials (cookies) in requests
+  baseURL: productionURL,
+  withCredentials: true, 
 });
 
 export default axiosInstance;
