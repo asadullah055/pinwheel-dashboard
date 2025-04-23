@@ -8,12 +8,14 @@ const Pagination = ({
   perPage,
   onPerPageChange,
 }) => {
+  console.log(totalItems);
+
   const totalPages = Math.ceil(totalItems / perPage);
   //   get pagination number
   const getPaginationNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 3;
-    if (totalPages <= 10) {
+    if (totalPages <= 9) {
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
       }
@@ -73,14 +75,13 @@ const Pagination = ({
         </button>
         {pageNumbers.map((number, index) => (
           <li
-            key={index}
+            key={`${number}-${index}`}
             onClick={() => typeof number === "number" && onPageChange(number)}
-            className={`rounded py-1.5 px-3 cursor-pointer font-medium hover:bg-blue-500 hover:text-white  ${
+            className={`rounded py-1.5 px-3 cursor-pointer font-medium hover:bg-blue-500 hover:text-white ${
               number === currentPage
                 ? "bg-blue-500 text-white"
                 : "bg-white text-gray-500"
-            }`}
-            disabled={number === "..."}
+            } ${number === "..." ? "pointer-events-none" : ""}`}
           >
             {number}
           </li>

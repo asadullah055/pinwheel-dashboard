@@ -1,13 +1,19 @@
 import React, { useState } from "react";
-import { brand } from "../../pages/Brand/brandData";
 import Pagination from "../Pagination";
 import SingleBrand from "./SingleBrand";
 
-const BrandList = () => {
-  const [brands, setBrands] = useState(brand);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const totalItems = 150; // Example total items; replace with actual data count
+const BrandList = ({
+  AllBrands,
+  setCurrentPage,
+  setPerPage,
+  currentPage,
+  perPage,
+  totalBrands,
+}) => {
+  const [brands, setBrands] = useState(AllBrands);
+
+  // const totalItems = AllBrands?.totalBrands; // Example total items; replace with actual data count
+  console.log(totalBrands, perPage);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -19,21 +25,14 @@ const BrandList = () => {
   };
   return (
     <>
-      <Pagination
-        currentPage={currentPage}
-        totalItems={totalItems}
-        onPageChange={handlePageChange}
-        perPage={perPage}
-        onPerPageChange={handlePerPageChange}
-      />
       <table className="table static">
         <thead className="text-[#111] text-[16px]">
           <tr>
             <th scope="col" className="py-3 px-4 w-10 ">
-            <input
-          type="checkbox"
-          className="checkbox  rounded-xs border-gray-600 checkbox-xs"
-        />
+              <input
+                type="checkbox"
+                className="checkbox  rounded-xs border-gray-600 checkbox-xs"
+              />
             </th>
             <th scope="col" className="py-3 px-4">
               Name
@@ -57,10 +56,19 @@ const BrandList = () => {
         </thead>
         <tbody>
           {brands.map((brand) => (
-            <SingleBrand key={brand.id} brand={brand} />
+            <SingleBrand key={brand._id} brand={brand} />
           ))}
         </tbody>
       </table>
+      {totalBrands > perPage && (
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalBrands}
+          onPageChange={handlePageChange}
+          perPage={perPage}
+          onPerPageChange={handlePerPageChange}
+        />
+      )}
     </>
   );
 };

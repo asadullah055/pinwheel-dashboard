@@ -1,5 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { BsImage } from "react-icons/bs";
+import { useDispatch, useSelector } from "react-redux";
+import Loading from "../../components/Loading";
+import {
+  createCategory,
+  messageClear,
+} from "../../features/category/categorySlice";
 
 const CreateCategory = () => {
   const [imageShow, setImage] = useState("");
@@ -7,6 +14,11 @@ const CreateCategory = () => {
     name: "",
     image: "",
   });
+  const { successMessage, errorMessage, isLoading } = useSelector(
+    (state) => state.category
+  );
+  const dispatch = useDispatch();
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -17,14 +29,37 @@ const CreateCategory = () => {
       image: file,
     });
   };
-  const handleSubmitOrEdit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(state);
+    const formData = new FormData();
+    formData.append("name", state.name);
+    formData.append("image", state.image);
+    if (!state.name || !state.image) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    await dispatch(createCategory(formData)).unwrap();
   };
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+      // clear state
+      setState({
+        name: "",
+        image: "",
+      });
+      setImage("");
+    }
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+  }, [successMessage, errorMessage]);
   return (
     <div className="w-full md:w-3/4 lg:w-1/2 mx-auto p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-[24px] font-semibold text-[#111] ">Add Category</h2>
-      <form onSubmit={handleSubmitOrEdit} className="pt-1">
+      <form className="pt-1">
         <div className="mb-4">
           <label className="block text-[17px] font-semibold text-[#111] mb-1">
             Category Name <span className="text-red-500">*</span>
@@ -75,9 +110,11 @@ const CreateCategory = () => {
 
         <button
           type="submit"
+          onClick={handleSubmit}
+          disabled={isLoading}
           className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-hidden "
         >
-          Upload
+          {isLoading ? <Loading text={"Submitting...."} /> : "Submit"}
         </button>
       </form>
     </div>

@@ -1,4 +1,5 @@
 import React from "react";
+import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 
 const SingleBrand = ({ brand }) => {
   const { name, image, quantity, status, sale } = brand || "";
@@ -17,10 +18,10 @@ const SingleBrand = ({ brand }) => {
         <img className="h-[50px] w-[50px]" src={image} alt="" />
       </td>
       <td scope="col" className="py-3 px-4">
-        {quantity}
+        {quantity || 0}
       </td>
       <td scope="col" className="py-3 px-4">
-        {sale}
+        {sale || 0}
       </td>
       <td scope="col" className="py-3 px-4 ">
         <span
@@ -34,7 +35,14 @@ const SingleBrand = ({ brand }) => {
         </span>
       </td>
       <td scope="col" className="py-3 px-4">
-        Action
+        <div className="flex items-center gap-2">
+          <span className="text-blue-500">
+            <FaRegEdit size={20} />
+          </span>
+          <span className="text-red-500">
+            <FaRegTrashAlt size={20} />
+          </span>
+        </div>
       </td>
     </tr>
   );
