@@ -17,10 +17,10 @@ const SingleCategory = ({ category }) => {
         <img className="h-[50px] w-[50px]" src={image} alt="" />
       </td>
       <td scope="col" className="py-3 px-4">
-        {quantity}
+        {quantity || 0}
       </td>
       <td scope="col" className="py-3 px-4">
-        {sale}
+        {sale || 0}
       </td>
       <td scope="col" className="py-3 px-4">
         <span

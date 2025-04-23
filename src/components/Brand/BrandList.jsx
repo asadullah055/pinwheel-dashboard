@@ -12,9 +12,6 @@ const BrandList = ({
 }) => {
   const [brands, setBrands] = useState(AllBrands);
 
-  // const totalItems = AllBrands?.totalBrands; // Example total items; replace with actual data count
-  console.log(totalBrands, perPage);
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };

@@ -8,7 +8,7 @@ const Pagination = ({
   perPage,
   onPerPageChange,
 }) => {
-  console.log(totalItems);
+  console.log("totalItems", totalItems);
 
   const totalPages = Math.ceil(totalItems / perPage);
   //   get pagination number
