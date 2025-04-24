@@ -36,3 +36,11 @@ layer(base);
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+.jodit-status-bar {
+  display: none !important;
+}
+@layer components {
+  .title {
+    @apply block text-sm font-semibold text-slate-700 mb-1;
+  }
+}

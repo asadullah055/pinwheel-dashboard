@@ -9,7 +9,7 @@ import CreateBrand from "./pages/Brand/CreateBrand";
 import Category from "./pages/Category/Category";
 import CreateCategory from "./pages/Category/CreateCategory";
 import Order from "./pages/order/Order";
-import CreateUpdateProduct from "./pages/product/CreateUpdateProduct";
+import CreateProduct from "./pages/product/CreateProduct";
 import Product from "./pages/product/Product";
 
 function App() {
@@ -28,11 +28,12 @@ function App() {
           <Route path="brand/create" element={<CreateBrand />} />
           <Route path="brand/list" element={<Brand />} />
           <Route path="order/list" element={<Order />} />
-          <Route path="product/list" element={<Product />} />
-          <Route path="product/create" element={<CreateUpdateProduct />} />
           // category
           <Route path="category/create" element={<CreateCategory />} />
           <Route path="category/list" element={<Category />} />
+          // product
+          <Route path="product/create" element={<CreateProduct />} />
+          <Route path="product/list" element={<Product />} />
         </Route>
 
         {/* Public routes without protection */}
