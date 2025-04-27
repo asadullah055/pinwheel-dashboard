@@ -26,12 +26,25 @@ export const getAllBrands = createAsyncThunk(
     }
   }
 );
+export const listBrand = createAsyncThunk(
+  "/brand/listBrand",
+  async (_, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/brand/dropdownBrands`);
+     
+      return fulfillWithValue(response.data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 const initialState = {
   isError: false,
   brand: "",
   AllBrands: [],
   totalBrands: 0,
+  listAllBrands: [],
   isLoading: false,
   successMessage: "",
   errorMessage: "",
@@ -77,7 +90,12 @@ const brandSlice = createSlice({
         state.isError = true;
         state.isLoading = false;
         state.error = action.payload?.message;
-      });
+      })
+      .addCase(listBrand.fulfilled, (state, { payload }) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.listAllBrands = payload.brands;
+      })
   },
 });
 export const { messageClear } = brandSlice.actions;

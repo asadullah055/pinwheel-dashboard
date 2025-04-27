@@ -44,4 +44,4 @@ const Editor = ({ description, setDescription }) => {
   );
 };
 
-export default Editor;
+export default React.memo(Editor);

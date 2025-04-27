@@ -25,11 +25,24 @@ export const getAllCategories = createAsyncThunk(
     }
   }
 );
+export const listCategory = createAsyncThunk(
+  "/brand/listCategory",
+  async (_, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/category/dropdownCategories`);
+     
+      return fulfillWithValue(response.data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 const initialState = {
   isError: false,
   category: "",
   isLoading: false,
   allCategory: [],
+  listCategories: [],
   totalCategory: 0,
   successMessage: "",
   errorMessage: "",
@@ -72,6 +85,20 @@ const categorySlice = createSlice({
         state.allCategory = payload.categories;
       })
       .addCase(getAllCategories.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.error = action.payload?.message;
+      })
+      .addCase(listCategory.pending, (state, action) => {
+        state.isError = false;
+        state.isLoading = true;
+      })
+      .addCase(listCategory.fulfilled, (state, { payload }) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.listCategories = payload.categories;
+      })
+      .addCase(listCategory.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
         state.error = action.payload?.message;

@@ -12,7 +12,6 @@ const Highlights = ({ setShortDescription, shortDescription }) => {
     showCharsCounter: false,
     showWordsCounter: false,
     toolbarSticky: false,
-
     buttons: ["ul"],
   };
   return (
@@ -26,4 +25,4 @@ const Highlights = ({ setShortDescription, shortDescription }) => {
   );
 };
 
-export default Highlights;
+export default React.memo(Highlights);
