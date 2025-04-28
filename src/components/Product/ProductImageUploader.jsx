@@ -7,8 +7,12 @@ const ProductImageUploader = ({ images, setImages }) => {
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    const imageUrls = files.map((file) => URL.createObjectURL(file));
-    setImages((prev) => [...prev, ...imageUrls]);
+    if (files.length + images.length > 5) {
+      // Limiting to 5 images
+      alert("You can only upload 5 images.");
+      return;
+    }
+    setImages((prev) => [...prev, ...files]);
   };
 
   const handleAddClick = () => {
@@ -31,7 +35,8 @@ const ProductImageUploader = ({ images, setImages }) => {
     e.preventDefault();
   };
 
-  const removeImage = (index) => {
+  const removeImage = (e, index) => {
+    e.preventDefault();
     setImages(images.filter((_, i) => i !== index));
   };
 
@@ -50,17 +55,22 @@ const ProductImageUploader = ({ images, setImages }) => {
             onDragOver={handleDragOver}
             className="relative w-28 h-28 rounded border border-gray-300 overflow-hidden"
           >
-            <img src={img} alt="Product" className="w-full h-full " />
+            <img
+              src={img instanceof File ? URL.createObjectURL(img) : img} // Check if it's a file object
+              alt="Product"
+              className="w-full h-full"
+            />
             <div className="absolute inset-0 flex justify-center items-center gap-2 bg-black bg-opacity-60 opacity-0 hover:opacity-60 transition z-10 cursor-move">
               <button
                 className="text-white absolute top-2 right-2 z-50 cursor-pointer"
-                onClick={() => removeImage(index)}
+                onClick={(e) => removeImage(e, index)}
               >
                 <FaRegTrashAlt />
               </button>
             </div>
           </div>
         ))}
+
         {/* Add Image Button */}
         <div
           onClick={handleAddClick}

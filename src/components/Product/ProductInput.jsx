@@ -2,8 +2,12 @@ import React from "react";
 
 const ProductInput = ({ title, placeholder, name, value, onChange }) => {
   return (
-    <div className="mb-4">
-      {title && <label className="title">{title}</label>}
+    <div className="">
+      {title && (
+        <label className="title">
+          {title} <span className="text-red-500">*</span>
+        </label>
+      )}
       <input
         type="text"
         name={name}
