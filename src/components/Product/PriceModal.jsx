@@ -1,9 +1,50 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import { updatePriceAndStock } from "../../features/product/productSlice";
 
-const PriceModal = ({ closeModal }) => {
-  const [retailPrice, setRetailPrice] = useState("200");
-  const [discountPrice, setDiscountPrice] = useState("160");
+const PriceModal = ({ product, closeModal }) => {
+  const [retailPrice, setRetailPrice] = useState(product.regularPrice);
+  const [discountPrice, setDiscountPrice] = useState(product.discountPrice);
+  const dispatch = useDispatch();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (retailPrice === "") {
+      toast.error("Please fill in positive regular price");
+      return;
+    }
+
+    if (isNaN(retailPrice) || isNaN(discountPrice)) {
+      toast.error("Prices must be valid numbers");
+      return;
+    }
+
+    if (Number(retailPrice) < 0 || Number(discountPrice) < 0) {
+      toast.error("Prices cannot be negative");
+      return;
+    }
+
+    if (Number(discountPrice) > Number(retailPrice)) {
+      toast.error("Discount price cannot be greater than regular price");
+      return;
+    }
+    try {
+      const response = await dispatch(
+        updatePriceAndStock({
+          id: product._id,
+          regularPrice: retailPrice,
+          discountPrice: discountPrice,
+        })
+      ).unwrap();
+
+      // Assuming response contains message
+      toast.success(response.message);
+      closeModal();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
       <div
@@ -12,7 +53,7 @@ const PriceModal = ({ closeModal }) => {
       >
         {/* Modal Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Edit Price</h2>
+          <h2 className="text-xl font-semibold">Edit Price</h2>
           <button className="cursor-pointer" onClick={closeModal}>
             <IoClose size={24} />
           </button>
@@ -24,12 +65,14 @@ const PriceModal = ({ closeModal }) => {
             {/* Product Info */}
             <div className="flex items-center gap-3">
               <img
-                src="https://i.ibb.co/7g0xY2N/Rectangle-1.png"
-                alt="Product"
+                src={product?.images[0]}
+                alt={product?.title}
                 className="w-10 h-10 rounded-md"
               />
               <div className="flex flex-col">
-                <p className="text-sm font-semibold text-gray-700">Red</p>
+                <p className="text-sm font-semibold text-gray-700 line-clamp-3">
+                  {product.title}
+                </p>
               </div>
             </div>
 
@@ -72,10 +115,7 @@ const PriceModal = ({ closeModal }) => {
             Cancel
           </button>
           <button
-            onClick={() => {
-              closeModal();
-              // Save logic can be added here
-            }}
+            onClick={handleSubmit}
             className="px-5 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
           >
             OK

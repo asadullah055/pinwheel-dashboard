@@ -4,8 +4,6 @@ import axiosInstance from "../../../utils/axios";
 export const createProduct = createAsyncThunk(
   "/product/create",
   async (formData, { fulfillWithValue, rejectWithValue }) => {
-
-   
     try {
       const response = await axiosInstance.post("/product/create", formData);
       return fulfillWithValue(response.data);
@@ -17,11 +15,29 @@ export const createProduct = createAsyncThunk(
 );
 export const getAllProducts = createAsyncThunk(
   "/product/getAllProducts",
-  async ({ page = 1, limit = 10 } = {}, { fulfillWithValue, rejectWithValue }) => {
+  async (
+    { page = 1, limit = 10 } = {},
+    { fulfillWithValue, rejectWithValue }
+  ) => {
     try {
-      const response = await axiosInstance.get(`/product/getAllProducts?page=${page}&limit=${limit}`);
+      const response = await axiosInstance.get(
+        `/product/getAllProducts?page=${page}&limit=${limit}`
+      );
       console.log(response.data);
-      
+
+      return fulfillWithValue(response.data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const updatePriceAndStock = createAsyncThunk(
+  "/product/updatePrice",
+  async (data, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(`/product/updatePrice`, data);
+      console.log(response.data);
+
       return fulfillWithValue(response.data);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -46,7 +62,8 @@ const initialState = {
   product: "",
   allProduct: [],
   totalProducts: 0,
-//   listAllproducts: [],
+  //   listAllproducts: [],
+  // updatePriceAndStock: {},
   isLoading: false,
   successMessage: "",
   errorMessage: "",
@@ -94,7 +111,21 @@ const productSlice = createSlice({
         state.isLoading = false;
         state.errorMessage = action.payload?.message;
       })
-
+      .addCase(updatePriceAndStock.pending, (state) => {
+        state.isError = false;
+        state.isLoading = true;
+      })
+      .addCase(updatePriceAndStock.fulfilled, (state, { payload }) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.product = payload.product;
+        state.successMessage = payload.message;
+      })
+      .addCase(updatePriceAndStock.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.errorMessage = action.payload?.message;
+      });
   },
 });
 export const { messageClear } = productSlice.actions;

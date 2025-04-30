@@ -5,9 +5,8 @@ import { getAllProducts } from "../../features/product/productSlice";
 
 const Product = () => {
   const dispatch = useDispatch();
-  const { isError, isLoading, totalProducts, allProduct } = useSelector(
-    (state) => state.product
-  );
+  const { isError, isLoading, totalProducts, allProduct, product } =
+    useSelector((state) => state.product);
   // const [brands, setBrand] = useState([AllBrands]);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,8 +14,7 @@ const Product = () => {
 
   useEffect(() => {
     dispatch(getAllProducts({ page: currentPage, limit: perPage }));
-  }, [dispatch, currentPage, perPage]);
-  console.log(allProduct);
+  }, [dispatch, currentPage, perPage, product]);
 
   return (
     <div className="p-4">

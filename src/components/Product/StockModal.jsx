@@ -1,9 +1,43 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import { updatePriceAndStock } from "../../features/product/productSlice";
 
-const StockModal = ({ closeStockModal }) => {
-  const [retailPrice, setRetailPrice] = useState("200");
-  const [discountPrice, setDiscountPrice] = useState("160");
+const StockModal = ({ product, closeStockModal }) => {
+  const [stock, setStock] = useState(product.stock);
+
+  const dispatch = useDispatch();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (stock === "") {
+      toast.error("Please enter a stock value");
+      return;
+    }
+
+    if (Number(stock) < 0) {
+      toast.error("Stock cannot be negative");
+      return;
+    }
+
+    try {
+      const response = await dispatch(
+        updatePriceAndStock({
+          id: product._id,
+          stock: stock,
+        })
+      ).unwrap();
+      console.log(response.message);
+
+      // Assuming response contains message
+      toast.success(response.message);
+      closeStockModal();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
       <div
@@ -12,7 +46,7 @@ const StockModal = ({ closeStockModal }) => {
       >
         {/* Modal Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">Edit Stock</h2>
+          <h2 className="text-xl font-semibold">Edit Stock</h2>
           <button className="cursor-pointer" onClick={closeStockModal}>
             <IoClose size={24} />
           </button>
@@ -20,17 +54,17 @@ const StockModal = ({ closeStockModal }) => {
 
         {/* Modal Body */}
         <div className="bg-gray-100 rounded-md p-4">
-          <div className="grid grid-cols-3 gap-4 items-center">
+          <div className="grid grid-cols-2 gap-4 items-center">
             {/* Product Info */}
             <div className="flex items-center gap-3">
               <img
-                src="https://i.ibb.co/7g0xY2N/Rectangle-1.png"
-                alt="Product"
+                src={product?.images[0]}
+                alt={product?.title}
                 className="w-10 h-10 rounded-md"
               />
-              <div className="flex flex-col">
-                <p className="text-sm font-semibold text-gray-700">Red</p>
-              </div>
+              <p className="text-sm font-semibold text-gray-700 line-clamp-3">
+                {product.title}
+              </p>
             </div>
 
             {/* Product Retail Price */}
@@ -40,8 +74,8 @@ const StockModal = ({ closeStockModal }) => {
                 <span className="px-2 text-gray-500">৳</span>
                 <input
                   type="text"
-                  value={retailPrice}
-                  onChange={(e) => setRetailPrice(e.target.value)}
+                  value={stock}
+                  onChange={(e) => setStock(e.target.value)}
                   className="p-2 w-full outline-none rounded-md"
                 />
               </div>
@@ -60,9 +94,7 @@ const StockModal = ({ closeStockModal }) => {
             Cancel
           </button>
           <button
-            onClick={() => {
-              closeStockModal();
-            }}
+            onClick={handleSubmit}
             className="px-5 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
           >
             OK
