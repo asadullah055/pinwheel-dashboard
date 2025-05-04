@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { BsImage } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../components/Loading";
-import {
-  createCategory,
-  messageClear,
-} from "../../features/category/categorySlice";
+import { createCategory } from "../../features/category/categorySlice";
 
 const CreateCategory = () => {
   const [imageShow, setImage] = useState("");
@@ -40,7 +37,7 @@ const CreateCategory = () => {
     }
     await dispatch(createCategory(formData)).unwrap();
   };
-  useEffect(() => {
+  /* useEffect(() => {
     if (successMessage) {
       toast.success(successMessage);
       dispatch(messageClear());
@@ -55,7 +52,7 @@ const CreateCategory = () => {
       toast.error(errorMessage);
       dispatch(messageClear());
     }
-  }, [successMessage, errorMessage]);
+  }, [successMessage, errorMessage]); */
   return (
     <div className="w-full md:w-3/4 lg:w-1/2 mx-auto p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-[24px] font-semibold text-[#111] ">Add Category</h2>

@@ -16,7 +16,6 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Protected routes under MainLayout */}
         <Route
           element={
             <ProtectedRoute>

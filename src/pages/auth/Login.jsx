@@ -3,7 +3,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
-import { login, messageClear } from "../../features/auth/authSlice";
+import { login, messageClear } from "../../features/auth/authSlice"; // Import the action
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -41,7 +41,7 @@ const Login = () => {
       toast.error(errorMessage);
       dispatch(messageClear());
     }
-  }, [successMessage, errorMessage]);
+  }, [successMessage, errorMessage, dispatch, navigate]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#F2F7FB]">

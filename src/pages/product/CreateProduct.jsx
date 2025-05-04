@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useReducer, useState } from "react";
-import toast from "react-hot-toast";
 import { VscClose } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import { prepareProductFormData } from "../../../utils/prepareProductFormData";
@@ -11,10 +10,7 @@ import ProductImageUploader from "../../components/Product/ProductImageUploader"
 import ProductInput from "../../components/Product/ProductInput";
 import { listBrand } from "../../features/Brand/brandslice";
 import { listCategory } from "../../features/category/categorySlice";
-import {
-  createProduct,
-  messageClear,
-} from "../../features/product/productSlice";
+import { createProduct } from "../../features/product/productSlice";
 
 // Reducer function
 const formReducer = (state, action) => {
@@ -107,7 +103,7 @@ const CreateProduct = () => {
       console.log(error);
     }
   };
-  useEffect(() => {
+  /*  useEffect(() => {
     if (successMessage) {
       toast.success(successMessage);
       dispatch(messageClear());
@@ -116,7 +112,7 @@ const CreateProduct = () => {
       toast.error(errorMessage);
       dispatch(messageClear());
     }
-  }, [successMessage, errorMessage]);
+  }, [successMessage, errorMessage]); */
   return (
     <div className="w-full lg:w-3/4 mx-auto p-6 bg-white rounded-lg">
       <h2 className="text-[24px] font-semibold text-[#111]">Add Product</h2>

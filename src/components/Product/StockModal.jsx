@@ -10,17 +10,14 @@ const StockModal = ({ product, closeStockModal }) => {
   const dispatch = useDispatch();
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (stock === "") {
       toast.error("Please enter a stock value");
       return;
     }
-
     if (Number(stock) < 0) {
       toast.error("Stock cannot be negative");
       return;
     }
-
     try {
       const response = await dispatch(
         updatePriceAndStock({
@@ -28,8 +25,6 @@ const StockModal = ({ product, closeStockModal }) => {
           stock: stock,
         })
       ).unwrap();
-      console.log(response.message);
-
       // Assuming response contains message
       toast.success(response.message);
       closeStockModal();

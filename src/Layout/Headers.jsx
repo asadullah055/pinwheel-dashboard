@@ -1,5 +1,6 @@
 import React from "react";
 import { FiMenu } from "react-icons/fi";
+import LogoutButton from "../components/LogoutButton";
 
 const Headers = ({ showHide }) => {
   return (
@@ -18,7 +19,8 @@ const Headers = ({ showHide }) => {
 
         <div className="flex items-center space-x-4">
           <img src="" alt="User profile" className="rounded-full w-10 h-10" />
-          <span className="hidden md:inline-block ">Thomas Anree</span>
+          {/* <span className="hidden md:inline-block ">Thomas Anree</span> */}
+          <LogoutButton />
         </div>
       </header>
     </div>
