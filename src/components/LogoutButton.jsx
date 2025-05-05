@@ -1,4 +1,5 @@
 import React from "react";
+import toast from "react-hot-toast";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";

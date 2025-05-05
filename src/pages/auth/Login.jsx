@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import { login, messageClear } from "../../features/auth/authSlice"; // Import the action
 
@@ -10,6 +10,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { successMessage, errorMessage, isLoading } = useSelector(
@@ -86,6 +87,14 @@ const Login = () => {
             {isLoading ? <Loading text={"Submitting...."} /> : "Login"}
           </button>
         </form>
+        <div className="mt-2">
+          <p>
+            Don't have an account?{" "}
+            <Link className="text-blue-600" to="/seller/sign-up">
+              Signup
+            </Link>
+          </p>
+        </div>
       </div>
       <Toaster position="top-center" reverseOrder={false} />
     </div>

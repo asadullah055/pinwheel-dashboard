@@ -36,8 +36,8 @@ function App() {
         </Route>
 
         {/* Public routes without protection */}
-        <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/sign-up" element={<SignUp />} />
+        <Route path="/seller/login" element={<Login />} />
+        <Route path="/seller/sign-up" element={<SignUp />} />
       </Routes>
     </BrowserRouter>
   );

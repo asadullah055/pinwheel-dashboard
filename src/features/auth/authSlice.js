@@ -12,6 +12,17 @@ export const login = createAsyncThunk(
     }
   }
 );
+export const register = createAsyncThunk(
+  "/auth/register",
+  async (formData, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const user = await axiosInstance.post("/auth/register", formData);
+      return fulfillWithValue(user.data);
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const logout = createAsyncThunk(
   "/auth/logout",
   async (_, { fulfillWithValue, rejectWithValue }) => {
@@ -49,6 +60,20 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(register.pending, (state) => {
+        state.isError = false;
+        state.isLoading = true;
+      })
+      .addCase(register.fulfilled, (state, { payload }) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.successMessage = payload.message;
+      })
+      .addCase(register.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.errorMessage = action.payload?.message;
+      })
       .addCase(login.pending, (state) => {
         state.isError = false;
         state.isLoading = true;

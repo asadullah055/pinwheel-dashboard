@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import Loading from "../../components/Loading";
+import { messageClear, register } from "../../features/auth/authSlice";
 
 const SignUp = () => {
+  const { successMessage, errorMessage, isLoading } = useSelector(
+    (state) => state.auth
+  );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
+    role: "seller",
   });
 
   const handleChange = (e) => {
@@ -15,19 +26,52 @@ const SignUp = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form Data Submitted", formData);
-  };
 
+    // === Validation ===
+    const { name, email, password, confirmPassword } = formData;
+
+    if (!name || !email || !password || !confirmPassword) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      toast.error("Please enter a valid email.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+    const payload = {
+      name,
+      email,
+      password,
+      role: formData.role, // if you still need it
+    };
+
+    await dispatch(register(payload)).unwrap();
+  };
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(messageClear());
+      navigate("/seller/login");
+    }
+    if (errorMessage) {
+      toast.error(errorMessage);
+      dispatch(messageClear());
+    }
+  }, [successMessage, errorMessage, dispatch, navigate]);
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#F2F7FB]">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-4">
           Sign Up to Pinwheel
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleRegister} className="space-y-4">
           <div>
             <label className="block text-[16px] font-bold text-gray-700">
               Your Name
@@ -85,12 +129,22 @@ const SignUp = () => {
           </div>
           <button
             type="submit"
+            disabled={isLoading}
             className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
           >
-            Create account
+            {isLoading ? <Loading text={"Submitting...."} /> : "Create account"}
           </button>
         </form>
+        <div className="mt-2">
+          <p>
+            Have an account?{" "}
+            <Link className="text-blue-600" to="/seller/login">
+              Login
+            </Link>
+          </p>
+        </div>
       </div>
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 };

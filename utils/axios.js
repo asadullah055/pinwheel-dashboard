@@ -28,7 +28,7 @@ export const setupInterceptors = ({ store, persistor, clearCredentials }) => {
           store.dispatch(clearCredentials());
           await persistor.purge();
 
-          window.location.href = "/admin/login";
+          window.location.href = "/seller/login";
           return Promise.reject(refreshError);
         }
       }
