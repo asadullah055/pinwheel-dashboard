@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import toast from "react-hot-toast";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
 
@@ -9,7 +10,7 @@ const ProductImageUploader = ({ images, setImages }) => {
     const files = Array.from(e.target.files);
     if (files.length + images.length > 5) {
       // Limiting to 5 images
-      alert("You can only upload 5 images.");
+      toast.error("You can only upload a maximum of 5 images.");
       return;
     }
     setImages((prev) => [...prev, ...files]);

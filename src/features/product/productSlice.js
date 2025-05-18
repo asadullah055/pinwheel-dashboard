@@ -31,13 +31,52 @@ export const getAllProducts = createAsyncThunk(
     }
   }
 );
+export const updateProduct = createAsyncThunk(
+  "/product/updateProduct",
+  async ({ id, data }, { fulfillWithValue, rejectWithValue }) => {
+    console.log(id, data);
+
+    try {
+      const response = await axiosInstance.put(`/product/${id}`, data);
+      return fulfillWithValue(response.data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 export const updatePriceAndStock = createAsyncThunk(
   "/product/updatePrice",
   async (data, { fulfillWithValue, rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(`/product/updatePrice`, data);
-      console.log(response.data);
+      return fulfillWithValue(response.data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const getSingleProduct = createAsyncThunk(
+  "/product/singleProduct",
+  async (id, { fulfillWithValue, rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/product/${id}`);
 
+      return fulfillWithValue(response.data);
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+export const updateStatus = createAsyncThunk(
+  "/product/updateStatus",
+  async ({ id, data }, { fulfillWithValue, rejectWithValue }) => {
+    console.log(id, data);
+
+    try {
+      const response = await axiosInstance.put(
+        `/product/updateStatus/${id}`,
+        data
+      );
       return fulfillWithValue(response.data);
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -122,6 +161,36 @@ const productSlice = createSlice({
         state.successMessage = payload.message;
       })
       .addCase(updatePriceAndStock.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.errorMessage = action.payload?.message;
+      })
+      .addCase(getSingleProduct.pending, (state) => {
+        state.isError = false;
+        state.isLoading = true;
+      })
+      .addCase(getSingleProduct.fulfilled, (state, { payload }) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.product = payload.product;
+        state.successMessage = payload.message;
+      })
+      .addCase(getSingleProduct.rejected, (state, action) => {
+        state.isError = true;
+        state.isLoading = false;
+        state.errorMessage = action.payload?.message;
+      })
+      .addCase(updateProduct.pending, (state) => {
+        state.isError = false;
+        state.isLoading = true;
+      })
+      .addCase(updateProduct.fulfilled, (state, { payload }) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.product = payload.product;
+        state.successMessage = payload.message;
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
         state.isError = true;
         state.isLoading = false;
         state.errorMessage = action.payload?.message;

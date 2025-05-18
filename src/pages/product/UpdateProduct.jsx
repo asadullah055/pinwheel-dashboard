@@ -1,6 +1,8 @@
-import React, { useCallback, useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { VscClose } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { prepareProductFormData } from "../../../utils/prepareProductFormData";
 import { validateProductForm } from "../../../utils/validateProductForm";
 import Loading from "../../components/Loading";
@@ -10,69 +12,60 @@ import ProductImageUploader from "../../components/Product/ProductImageUploader"
 import ProductInput from "../../components/Product/ProductInput";
 import { listBrand } from "../../features/Brand/brandslice";
 import { listCategory } from "../../features/category/categorySlice";
-import { createProduct } from "../../features/product/productSlice";
+import {
+  getSingleProduct,
+  updateProduct,
+} from "../../features/product/productSlice";
 
-// Reducer function
-const formReducer = (state, action) => {
-  const { name, value } = action;
-
-  if (name === "metaTitle" || name === "metaDescription") {
-    return {
-      ...state,
-      metaData: {
-        ...state.metaData,
-        [name]: value,
-      },
-    };
-  }
-
-  return {
-    ...state,
-    [name]: value,
-  };
-};
-
-const initialFormData = {
-  title: "",
-  category: "",
-  brand: "",
-  regularPrice: "",
-  discountPrice: "",
-  stock: "",
-  packageWeight: "",
-  packageLength: "",
-  packageWidth: "",
-  packageHeight: "",
-  warrantyType: "",
-  warrantyTime: "",
-  warrantyPolicy: "",
-  status: "",
-  metaData: {
-    metaTitle: "",
-    metaDescription: "",
-  },
-};
-
-const CreateProduct = () => {
+const UpdateProduct = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const { product, isLoading } = useSelector((state) => state.product);
+  const { listCategories } = useSelector((state) => state.category);
+  const { listAllBrands } = useSelector((state) => state.brand);
+  const [errors, setErrors] = useState({});
+  const [formData, setFormData] = useState({
+    title: "",
+    category: "",
+    brand: "",
+    images: [],
+    description: "",
+    shortDescription: "",
+    regularPrice: "",
+    discountPrice: "",
+    stock: "",
+    packageWeight: "",
+    packageLength: "",
+    packageWidth: "",
+    packageHeight: "",
+    warrantyType: "",
+    warrantyTime: "",
+    warrantyPolicy: "",
+    status: "published",
+    metaData: {
+      metaTitle: "",
+      metaDescription: "",
+    },
+  });
   const [images, setImages] = useState([]);
   const [description, setDescription] = useState("");
   const [shortDescription, setShortDescription] = useState("");
-  const [formData, dispatchFormData] = useReducer(formReducer, initialFormData);
-  const { listCategories } = useSelector((state) => state.category);
-  const { listAllBrands } = useSelector((state) => state.brand);
-  const { isLoading } = useSelector((state) => state.product);
-  const dispatch = useDispatch();
-  const [errors, setErrors] = useState({});
-  useEffect(() => {
-    dispatch(listCategory());
-    dispatch(listBrand());
-  }, [dispatch]);
 
-  const handleInputChange = useCallback((e) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    dispatchFormData({ name, value });
-  }, []);
 
+    if (name === "metaTitle" || name === "metaDescription") {
+      setFormData((prev) => ({
+        ...prev,
+        metaData: {
+          ...prev.metaData,
+          [name]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -94,13 +87,52 @@ const CreateProduct = () => {
       shortDescription,
       images
     );
-
     try {
-      await dispatch(createProduct(formDataToSend)).unwrap();
+      await dispatch(updateProduct({ id, data: formDataToSend })).unwrap();
+      toast.success("Product updated successfully!");
     } catch (error) {
+      toast.error("Failed to update product. Please try again.");
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        title: product.title || "",
+        brand: product.brand?._id || "",
+        category: product.category?._id || "",
+        images: product.images || [],
+        description: product.description || "",
+        shortDescription: product.shortDescription || "",
+        regularPrice: product.regularPrice || "",
+        discountPrice: product.discountPrice || "",
+        stock: product.stock || "",
+        packageWeight: product.packageWeight || "",
+        packageLength: product.packageLength || "",
+        packageWidth: product.packageWidth || "",
+        packageHeight: product.packageHeight || "",
+        warrantyType: product.warrantyType || "",
+        warrantyTime: product.warrantyTime || "",
+        warrantyPolicy: product.warrantyPolicy || "",
+        status: product.status || "",
+        metaData: {
+          metaTitle: product.metaData?.metaTitle || "",
+          metaDescription: product.metaData?.metaDescription || "",
+        },
+      });
+
+      setImages(product.images || []);
+      setDescription(product.description || "");
+      setShortDescription(product.shortDescription || "");
+    }
+  }, [product]);
+
+  useEffect(() => {
+    dispatch(getSingleProduct(id));
+    dispatch(listCategory());
+    dispatch(listBrand());
+  }, [id, dispatch]);
 
   return (
     <div className="w-full lg:w-3/4 mx-auto p-6 bg-white rounded-lg">
@@ -400,12 +432,12 @@ const CreateProduct = () => {
         {/* Submit Button */}
         <div className="flex justify-end mt-6">
           <button
-            disabled={isLoading}
+            // disabled={isLoading}
             onClick={handleSubmit}
             type="submit"
             className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600"
           >
-            {isLoading ? <Loading text={"Submitting"} /> : "Add Product"}
+            {isLoading ? <Loading text={"Submitting"} /> : "Update Product"}
           </button>
         </div>
       </form>
@@ -413,4 +445,4 @@ const CreateProduct = () => {
   );
 };
 
-export default CreateProduct;
+export default UpdateProduct;

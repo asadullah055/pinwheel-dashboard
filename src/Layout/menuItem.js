@@ -29,6 +29,7 @@ export const navMenu = [
         path: "/brand/list",
       },
     ],
+    role: "admin",
   },
   {
     id: 3,
@@ -46,6 +47,7 @@ export const navMenu = [
         path: "/category/list",
       },
     ],
+    role: "admin",
   },
   {
     id: 4,
@@ -91,17 +93,20 @@ export const navMenu = [
     title: "Coupon",
     icon: RiCoupon3Line,
     path: "/coupon",
+    role: "admin",
   },
   {
     id: 7,
     title: "Customer",
     icon: FiUser,
     path: "/customer",
+ 
   },
   {
     id: 8,
     title: "User",
     icon: GrUserAdmin,
     path: "/user",
+    role: "admin",
   },
 ];

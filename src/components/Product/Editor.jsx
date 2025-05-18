@@ -30,6 +30,7 @@ const Editor = ({ description, setDescription }) => {
       "redo",
       "fontsize",
       "paragraph",
+      "brush",
     ],
   };
 

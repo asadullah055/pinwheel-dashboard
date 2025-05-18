@@ -1,17 +1,28 @@
 import React, { useState } from "react";
 import { GoDotFill } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { navMenu } from "./menuItem";
 
 const Sidebar = ({ show }) => {
   const [expandedMenu, setExpandedMenu] = useState(null);
-
   const location = useLocation();
-
   const toggleMenu = (id) => {
     setExpandedMenu((prev) => (prev === id ? null : id));
   };
+
+  // Get user and role from Redux state
+  const user = useSelector((state) => state.auth.user);
+  const userRole = user?.role;
+
+  // Filter nav items by role: show all for admin, else omit items with role 'admin'
+  const filteredMenu = navMenu.filter((nav) => {
+    // if nav has no role restriction, always include
+    if (!nav.role) return true;
+    // include only if user's role matches
+    return nav.role === userRole;
+  });
 
   return (
     <aside
@@ -25,7 +36,7 @@ const Sidebar = ({ show }) => {
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         <nav className="flex-1 px-4">
           <ul className="font-medium">
-            {navMenu.map((nav) => {
+            {filteredMenu.map((nav) => {
               // Check if the current path matches any child path
               const activeParent = nav.child?.some(
                 (item) => location.pathname === item.path
@@ -73,7 +84,7 @@ const Sidebar = ({ show }) => {
                               <span className="flex items-center gap-2">
                                 <GoDotFill />
                                 {item.title}
-                              </span>{" "}
+                              </span>
                             </Link>
                           </li>
                         );

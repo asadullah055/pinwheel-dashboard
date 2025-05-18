@@ -1,15 +1,17 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import { BiSolidEditAlt } from "react-icons/bi";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { updateStatus } from "../../features/product/productSlice";
 import PriceModal from "./PriceModal";
 import StockModal from "./StockModal";
 
-const ProductList = ({ allProduct, totalProducts }) => {
+const ProductList = ({ allProduct }) => {
   const [products, setProducts] = useState(allProduct);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isStockModal, setIsStockModal] = useState(false);
-  const { product } = useSelector((state) => state.product);
   const dispatch = useDispatch();
   const closeModal = () => {
     setIsOpenModal(false);
@@ -21,15 +23,25 @@ const ProductList = ({ allProduct, totalProducts }) => {
     setSelectedProduct(null);
   };
 
-  const handlePriceUpdate = (updatedProduct) => {
-    setProducts((prev) =>
-      prev.map((prod) =>
-        prod._id === updatedProduct._id ? { ...prod, ...updatedProduct } : prod
-      )
-    );
-  };
+  const toggleStatus = async (productId) => {
+    try {
+      await dispatch(
+        updateStatus({
+          id: productId,
+          data: {
+            status:
+              products.find((prod) => prod._id === productId).status ===
+              "published"
+                ? "unpublished"
+                : "published",
+          },
+        })
+      ).unwrap();
+      toast.success("Product status updated successfully");
+    } catch (error) {
+      toast.error("Something went wrong, please try again.");
+    }
 
-  const toggleStatus = (productId) => {
     setProducts((prev) =>
       prev.map((prod) =>
         prod._id === productId
@@ -141,7 +153,12 @@ const ProductList = ({ allProduct, totalProducts }) => {
                 </td>
 
                 <td className="py-3 px-4 w-32">
-                  <button className="text-blue-700 cursor-pointer">Edit</button>
+                  <Link
+                    to={`/product/update/${product._id}`}
+                    className="text-blue-700 cursor-pointer"
+                  >
+                    Edit
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -162,4 +179,4 @@ const ProductList = ({ allProduct, totalProducts }) => {
   );
 };
 
-export default ProductList;
+export default React.memo(ProductList);

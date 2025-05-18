@@ -17,7 +17,7 @@ const Highlights = ({ setShortDescription, shortDescription }) => {
   return (
     <JoditEditor
       ref={editor2}
-      value={shortDescription}
+      value={shortDescription || ""}
       config={config}
       tabIndex={1}
       onBlur={(newContent) => setShortDescription(newContent)}
