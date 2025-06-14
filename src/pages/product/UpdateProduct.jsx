@@ -16,7 +16,7 @@ import { validateProductForm } from "../../../utils/validateProductForm";
 // Redux RTK Queries
 import { warrantyData } from "../../../utils/warrantyData";
 import ProductSelect from "../../components/Product/ProductSelect";
-import { useGetDropdownBrandsQuery } from "../../features/brand/brandApi";
+import { useGetDropdownBrandsQuery } from "../../features/Brand/brandApi";
 import { useGetDropdownCategoriesQuery } from "../../features/category/categoryApi";
 import {
   useGetSingleProductQuery,

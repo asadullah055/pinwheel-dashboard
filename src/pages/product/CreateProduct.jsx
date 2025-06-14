@@ -7,7 +7,7 @@ import ProductImageUploader from "../../components/Product/ProductImageUploader"
 import ProductInput from "../../components/Product/ProductInput";
 import ProductSelect from "../../components/Product/ProductSelect"; // separate select input with error
 
-import { useGetAllBrandsQuery } from "../../features/brand/brandApi";
+import { useGetAllBrandsQuery } from "../../features/Brand/brandApi";
 import { useGetDropdownCategoriesQuery } from "../../features/category/categoryApi";
 import { useCreateProductMutation } from "../../features/product/productApi";
 
