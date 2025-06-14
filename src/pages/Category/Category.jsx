@@ -1,39 +1,39 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CategoryList from "../../components/Category/CategoryList";
-import { getAllCategories } from "../../features/category/categorySlice";
+import { useGetAllCategoriesQuery } from "../../features/category/categoryApi";
 
 const Category = () => {
-  const dispatch = useDispatch();
-  const { isError, isLoading, allCategory, totalCategory } = useSelector(
-    (state) => state.category
-  );
+  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
 
-  useEffect(() => {
-    dispatch(getAllCategories({ page: currentPage, limit: perPage }));
-  }, [dispatch, currentPage, perPage]);
+  // RTK Query hook
+  const { data, isLoading, isError, error } = useGetAllCategoriesQuery({
+    page: currentPage,
+    limit: perPage,
+  });
+
+  const allCategory = data?.categories || [];
+  const totalCategory = data?.totalCategories || 0;
 
   return (
     <div className="p-4">
-      <div className="flex items-center justify-between">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-semibold text-2xl">Category List</h3>
           <p className="text-sm py-1">Manage your categories</p>
         </div>
         <Link
+          to="/category/create"
           className="border py-2 px-3 bg-[#3577f0] text-white rounded-md font-semibold flex items-center gap-1"
-          to={"/category/create"}
         >
-          <span className="text-xl">
-            <IoIosAddCircleOutline className="font-semibold " />
-          </span>{" "}
-          Add Category
+          <IoIosAddCircleOutline className="text-xl" /> Add Category
         </Link>
       </div>
+
       <div className="bg-white p-2 rounded-md">
         <div className="overflow-x-auto">
           {isLoading ? (
@@ -51,11 +51,11 @@ const Category = () => {
             </div>
           ) : isError ? (
             <div className="text-red-500 text-center h-96 flex items-center justify-center">
-              Error loading Category
+              {error?.data?.message || "Error loading categories"}
             </div>
           ) : allCategory.length === 0 ? (
             <div className="flex justify-center items-center h-96">
-              <p className="text-gray-500">No Category available</p>
+              <p className="text-gray-500">No categories available</p>
             </div>
           ) : (
             <CategoryList

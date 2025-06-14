@@ -1,6 +1,5 @@
-import axios from "axios";
-/* const productionURL = "https://pinwheel-server.vercel.app/api"
-const local = "http://localhost:8000/api" */
+/* import axios from "axios";
+
 const baseURL = process.env.NODE_ENV === "production" ? "https://pinwheel-server.vercel.app/api" : "http://localhost:8000/api";
 
 const axiosInstance = axios.create({
@@ -41,4 +40,4 @@ export const setupInterceptors = ({ store, persistor, clearCredentials }) => {
 export default axiosInstance;
 
 
-// export default axiosInstance;
+ */

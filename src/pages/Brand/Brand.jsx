@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import BrandList from "../../components/Brand/BrandList";
-import { getAllBrands } from "../../features/Brand/brandslice";
+import BrandList from "../../components/Brand/BrandList"; // RTK Query hook
+import { useGetAllBrandsQuery } from "../../features/Brand/brandApi";
 
 const Brand = () => {
-  const dispatch = useDispatch();
-  const { isError, isLoading, AllBrands, totalBrands } = useSelector(
-    (state) => state.brand
-  );
-  // const [brands, setBrand] = useState([AllBrands]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
 
-  useEffect(() => {
-    dispatch(getAllBrands({ page: currentPage, limit: perPage }));
-  }, [dispatch, currentPage, perPage]);
+  // ✅ Use RTK Query to fetch paginated brands
+  const { data, isLoading, isError, error } = useGetAllBrandsQuery({
+    page: currentPage,
+    limit: perPage,
+  });
+
+  // Safely access data
+  const AllBrands = data?.brands || [];
+  const totalBrands = data?.totalBrands || 0;
 
   return (
     <div className="p-4">
@@ -30,20 +29,12 @@ const Brand = () => {
           className="border py-2 px-3 bg-[#3577f0] text-white rounded-md font-semibold flex items-center gap-1"
           to={"/brand/create"}
         >
-          <span className="text-xl">
-            <IoIosAddCircleOutline className="font-semibold " />
-          </span>{" "}
-          Add Brand
+          <IoIosAddCircleOutline className="text-xl" /> Add Brand
         </Link>
       </div>
+
       <div className="bg-white p-2 rounded-md">
         <div className="overflow-x-auto">
-          {AllBrands && AllBrands.length === 0 && !isError && (
-            <div className="flex justify-center items-center h-96">
-              <p className="text-gray-500">No brands available</p>
-            </div>
-          )}
-          {/* Loading and Error Handling */}
           {isLoading ? (
             <div className="flex justify-center items-center h-96">
               <svg
@@ -58,7 +49,13 @@ const Brand = () => {
               </svg>
             </div>
           ) : isError ? (
-            <div className="text-red-500 text-center">Error loading brands</div>
+            <div className="text-red-500 text-center h-96 flex justify-center items-center">
+              {error?.data?.message || "Error loading brands"}
+            </div>
+          ) : AllBrands?.length === 0 ? (
+            <div className="flex justify-center items-center h-96">
+              <p className="text-gray-500">No brands available</p>
+            </div>
           ) : (
             <BrandList
               AllBrands={AllBrands}

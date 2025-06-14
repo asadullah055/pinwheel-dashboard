@@ -31,6 +31,7 @@ const Editor = ({ description, setDescription }) => {
       "fontsize",
       "paragraph",
       "brush",
+      "table",
     ],
   };
 

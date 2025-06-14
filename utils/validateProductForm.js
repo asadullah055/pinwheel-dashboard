@@ -1,4 +1,4 @@
-export const validateProductForm = (formData, description, shortDescription, images) => {
+/* export const validateProductForm = (formData, description, shortDescription, images) => {
     const newErrors = {};
   
     if (!formData.title.trim()) newErrors.title = "Product title is required";
@@ -20,4 +20,37 @@ export const validateProductForm = (formData, description, shortDescription, ima
   
     return newErrors;
   };
+   */
+
+import { productSchema } from "./productSchema";
+
+export const validateProductForm = (
+  formData,
+  description,
+  shortDescription,
+  images
+) => {
+
   
+  const enrichedData = {
+    ...formData,
+    description,
+    shortDescription,
+    images,
+  };
+
+
+  const result = productSchema.safeParse(enrichedData);
+
+
+  if (!result.success) {
+    const formattedErrors = {};
+    result.error.errors.forEach((err) => {
+      const key = err.path.join(".");
+      formattedErrors[key] = err.message;
+    });
+    return formattedErrors;
+  }
+
+  return {};
+};

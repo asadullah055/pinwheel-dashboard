@@ -6,24 +6,19 @@ export const prepareProductFormData = (
 ) => {
   const formDataToSend = new FormData();
 
-  formDataToSend.append("title", formData.title);
+  // Add all basic fields
+  Object.entries(formData).forEach(([key, value]) => {
+    if (key === "metaData") {
+      formDataToSend.append("metaTitle", value.metaTitle || "");
+      formDataToSend.append("metaDescription", value.metaDescription || "");
+    } else {
+      formDataToSend.append(key, value);
+    }
+  });
+
+  // Add description and shortDescription
   formDataToSend.append("description", description);
   formDataToSend.append("shortDescription", shortDescription);
-  formDataToSend.append("regularPrice", formData.regularPrice);
-  formDataToSend.append("stock", formData.stock);
-  formDataToSend.append("category", formData.category);
-  formDataToSend.append("brand", formData.brand);
-  formDataToSend.append("discountPrice", formData.discountPrice);
-  formDataToSend.append("metaTitle", formData.metaData.metaTitle);
-  formDataToSend.append("metaDescription", formData.metaData.metaDescription);
-  formDataToSend.append("packageHeight", formData.packageHeight);
-  formDataToSend.append("packageWeight", formData.packageWeight);
-  formDataToSend.append("packageWidth", formData.packageWidth);
-  formDataToSend.append("packageLength", formData.packageLength);
-  formDataToSend.append("warrantyPolicy", formData.warrantyPolicy);
-  formDataToSend.append("warrantyTime", formData.warrantyTime);
-  formDataToSend.append("warrantyType", formData.warrantyType);
-  formDataToSend.append("status", formData.status);
 
   if (images && images.length > 0) {
     images.forEach((image) => {

@@ -2,8 +2,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "./components/Dashboard/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./Layout/MainLayout";
+import ForgetPassword from "./pages/auth/ForgetPassword";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
+import Verify from "./pages/auth/Verify";
 import Brand from "./pages/Brand/Brand";
 import CreateBrand from "./pages/Brand/CreateBrand";
 import Category from "./pages/Category/Category";
@@ -51,6 +53,8 @@ function App() {
         {/* Public routes without protection */}
         <Route path="/seller/login" element={<Login />} />
         <Route path="/seller/sign-up" element={<SignUp />} />
+        <Route path="/seller/verify" element={<Verify />} />
+        <Route path="/seller/forgot-password" element={<ForgetPassword />} />
       </Routes>
     </BrowserRouter>
   );

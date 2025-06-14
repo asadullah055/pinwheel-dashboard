@@ -1,32 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
 import ProductList from "../../components/Product/ProductList";
-import { getAllProducts } from "../../features/product/productSlice";
 
 const Product = () => {
-  const dispatch = useDispatch();
-  const { isError, isLoading, totalProducts, allProduct, product } =
-    useSelector((state) => state.product);
-  // const [brands, setBrand] = useState([AllBrands]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
 
-  useEffect(() => {
-    dispatch(getAllProducts({ page: currentPage, limit: perPage }));
-  }, [dispatch, currentPage, perPage, product]);
-
   return (
     <div className="p-4">
-      <div className="flex items-center justify-between">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-semibold text-2xl">Product List</h3>
-          <p className="text-sm py-1">Manage your Product</p>
+          <p className="text-sm text-gray-500">Manage your products</p>
         </div>
       </div>
+
+      {/* Product Table */}
       <div className="bg-white p-2 rounded-md">
         <div className="overflow-x-auto">
-          {isLoading ? (
+          {/* {isLoading ? (
             <div className="flex justify-center items-center h-96">
               <svg
                 className="animate-spin h-10 w-10 text-blue-500"
@@ -41,22 +33,20 @@ const Product = () => {
             </div>
           ) : isError ? (
             <div className="text-red-500 text-center h-96 flex items-center justify-center">
-              Error loading Products
+              {error?.data?.message || "Error loading products"}
             </div>
           ) : allProduct.length === 0 ? (
             <div className="flex justify-center items-center h-96">
-              <p className="text-gray-500">No Product available</p>
+              <p className="text-gray-500">No product available</p>
             </div>
-          ) : (
-            <ProductList
-              allProduct={allProduct}
-              setPerPage={setPerPage}
-              totalProducts={totalProducts}
-              currentPage={currentPage}
-              perPage={perPage}
-              setCurrentPage={setCurrentPage}
-            />
-          )}
+          ) : ( */}
+          <ProductList
+            currentPage={currentPage}
+            perPage={perPage}
+            setCurrentPage={setCurrentPage}
+            setPerPage={setPerPage}
+          />
+          {/* )} */}
         </div>
       </div>
     </div>

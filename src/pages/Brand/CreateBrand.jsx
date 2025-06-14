@@ -1,20 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { BsImage } from "react-icons/bs";
-import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../components/Loading";
-import { createBrand } from "../../features/Brand/brandslice";
+import { useCreateBrandMutation } from "../../features/Brand/brandApi";
 
 const CreateBrand = () => {
-  const { successMessage, errorMessage, isLoading } = useSelector(
-    (state) => state.brand
-  );
+  const [createBrand, { isLoading }] = useCreateBrandMutation();
   const [imageShow, setImage] = useState("");
   const [state, setState] = useState({
     name: "",
     image: "",
   });
-  const dispatch = useDispatch();
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -34,24 +30,17 @@ const CreateBrand = () => {
       toast.error("Please fill in all fields");
       return;
     }
-    await dispatch(createBrand(formData)).unwrap();
-  };
-  /* useEffect(() => {
-    if (successMessage) {
-      toast.success(successMessage);
-      dispatch(messageClear());
-      // clear state
-      setState({
-        name: "",
-        image: "",
-      });
+    try {
+      const res = await createBrand(formData).unwrap();
+      toast.success(res?.message || "Brand created successfully");
+
+      setState({ name: "", image: "" });
       setImage("");
+    } catch (err) {
+      toast.error(err?.data?.message || "Something went wrong");
     }
-    if (errorMessage) {
-      toast.error(errorMessage);
-      dispatch(messageClear());
-    }
-  }, [successMessage, errorMessage]); */
+  };
+
   return (
     <div className="w-full md:w-3/4 lg:w-1/2 mx-auto p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-[24px] font-semibold text-[#111] ">Add Brand</h2>

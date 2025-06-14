@@ -1,59 +1,62 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { BiSolidEditAlt } from "react-icons/bi";
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { updateStatus } from "../../features/product/productSlice";
 import PriceModal from "./PriceModal";
 import StockModal from "./StockModal";
+// ✅ RTK QUERY HOOK
+import {
+  useGetAllProductsQuery,
+  useUpdateStatusMutation,
+} from "../../features/product/productApi";
+import Pagination from "../Pagination";
 
-const ProductList = ({ allProduct }) => {
-  const [products, setProducts] = useState(allProduct);
+const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isStockModal, setIsStockModal] = useState(false);
-  const dispatch = useDispatch();
+
+  const { data, isLoading, isError, error } = useGetAllProductsQuery({
+    page: currentPage,
+    limit: perPage,
+  });
+  const [updateStatus] = useUpdateStatusMutation();
+
+  const products = data?.products || [];
+  const totalProducts = data?.totalProducts || 0;
+
   const closeModal = () => {
     setIsOpenModal(false);
     setSelectedProduct(null);
   };
-
   const closeStockModal = () => {
     setIsStockModal(false);
     setSelectedProduct(null);
   };
-
   const toggleStatus = async (productId) => {
-    try {
-      await dispatch(
-        updateStatus({
-          id: productId,
-          data: {
-            status:
-              products.find((prod) => prod._id === productId).status ===
-              "published"
-                ? "unpublished"
-                : "published",
-          },
-        })
-      ).unwrap();
-      toast.success("Product status updated successfully");
-    } catch (error) {
-      toast.error("Something went wrong, please try again.");
-    }
+    const current = products.find((p) => p._id === productId);
+    const nextStatus =
+      current?.status === "published" ? "unpublished" : "published";
 
-    setProducts((prev) =>
-      prev.map((prod) =>
-        prod._id === productId
-          ? {
-              ...prod,
-              status: prod.status === "published" ? "unpublished" : "published",
-            }
-          : prod
-      )
-    );
+    try {
+      await updateStatus({
+        id: productId,
+        data: { status: nextStatus },
+        queryArg: { page: currentPage, limit: perPage }, // Pass with mutation for dynamic cache update
+      }).unwrap();
+      toast.success("Product status updated");
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to update status");
+    }
+  };
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
   };
 
+  const handlePerPageChange = (itemsPerPage) => {
+    setPerPage(itemsPerPage);
+    setCurrentPage(1);
+  };
   return (
     <div className="relative">
       <table className="table static">
@@ -120,7 +123,7 @@ const ProductList = ({ allProduct }) => {
                     </div>
                     {product.discountPrice !== 0 && (
                       <span className="text-gray-400 line-through">
-                        ৳ {product.regularPrice}{" "}
+                        ৳ {product.regularPrice}
                       </span>
                     )}
                   </div>
@@ -164,7 +167,15 @@ const ProductList = ({ allProduct }) => {
             ))}
         </tbody>
       </table>
-
+      {totalProducts > perPage && (
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalProducts}
+          onPageChange={handlePageChange}
+          perPage={perPage}
+          onPerPageChange={handlePerPageChange}
+        />
+      )}
       {/* Modal */}
       {isOpenModal && selectedProduct && (
         <PriceModal product={selectedProduct} closeModal={closeModal} />
@@ -179,4 +190,4 @@ const ProductList = ({ allProduct }) => {
   );
 };
 
-export default React.memo(ProductList);
+export default ProductList;

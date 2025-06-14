@@ -1,36 +1,35 @@
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { VscClose } from "react-icons/vsc";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { prepareProductFormData } from "../../../utils/prepareProductFormData";
-import { validateProductForm } from "../../../utils/validateProductForm";
+
+// Components
 import Loading from "../../components/Loading";
 import Editor from "../../components/Product/Editor";
 import Highlights from "../../components/Product/Highlights";
 import ProductImageUploader from "../../components/Product/ProductImageUploader";
 import ProductInput from "../../components/Product/ProductInput";
-import { listBrand } from "../../features/Brand/brandslice";
-import { listCategory } from "../../features/category/categorySlice";
+
+// Utils
+import { prepareProductFormData } from "../../../utils/prepareProductFormData";
+import { validateProductForm } from "../../../utils/validateProductForm";
+
+// Redux RTK Queries
+import { warrantyData } from "../../../utils/warrantyData";
+import ProductSelect from "../../components/Product/ProductSelect";
+import { useGetDropdownBrandsQuery } from "../../features/brand/brandApi";
+import { useGetDropdownCategoriesQuery } from "../../features/category/categoryApi";
 import {
-  getSingleProduct,
-  updateProduct,
-} from "../../features/product/productSlice";
+  useGetSingleProductQuery,
+  useUpdateProductMutation,
+} from "../../features/product/productApi";
 
 const UpdateProduct = () => {
   const { id } = useParams();
-  const dispatch = useDispatch();
-  const { product, isLoading } = useSelector((state) => state.product);
-  const { listCategories } = useSelector((state) => state.category);
-  const { listAllBrands } = useSelector((state) => state.brand);
-  const [errors, setErrors] = useState({});
+
   const [formData, setFormData] = useState({
     title: "",
     category: "",
     brand: "",
-    images: [],
-    description: "",
-    shortDescription: "",
     regularPrice: "",
     discountPrice: "",
     stock: "",
@@ -47,11 +46,23 @@ const UpdateProduct = () => {
       metaDescription: "",
     },
   });
+
   const [images, setImages] = useState([]);
   const [description, setDescription] = useState("");
   const [shortDescription, setShortDescription] = useState("");
+  const [errors, setErrors] = useState({});
 
-  const handleInputChange = (e) => {
+  const { data: productData, isLoading: isProductLoading } =
+    useGetSingleProductQuery(id);
+  const { data: brandData } = useGetDropdownBrandsQuery();
+  const { data: categoryData } = useGetDropdownCategoriesQuery();
+  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
+
+  const listCategories = categoryData?.categories || [];
+  const listAllBrands = brandData?.brands || [];
+
+  // Handle input changes
+  const handleInputChange = useCallback((e) => {
     const { name, value } = e.target;
 
     if (name === "metaTitle" || name === "metaDescription") {
@@ -65,7 +76,8 @@ const UpdateProduct = () => {
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-  };
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -75,6 +87,8 @@ const UpdateProduct = () => {
       shortDescription,
       images
     );
+    console.log("Validation errors:", validationErrors);
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
@@ -87,136 +101,124 @@ const UpdateProduct = () => {
       shortDescription,
       images
     );
+
     try {
-      await dispatch(updateProduct({ id, data: formDataToSend })).unwrap();
-      toast.success("Product updated successfully!");
+      const res = await updateProduct({ id, data: formDataToSend }).unwrap();
+
+      toast.success(res.message || "Product updated successfully!");
     } catch (error) {
-      toast.error("Failed to update product. Please try again.");
+      toast.error(error?.data?.message || "Failed to update product.");
       console.log(error);
     }
   };
 
+  // Pre-fill form when product data is fetched
   useEffect(() => {
-    if (product) {
+    if (productData?.product) {
+      const p = productData.product;
       setFormData({
-        title: product.title || "",
-        brand: product.brand?._id || "",
-        category: product.category?._id || "",
-        images: product.images || [],
-        description: product.description || "",
-        shortDescription: product.shortDescription || "",
-        regularPrice: product.regularPrice || "",
-        discountPrice: product.discountPrice || "",
-        stock: product.stock || "",
-        packageWeight: product.packageWeight || "",
-        packageLength: product.packageLength || "",
-        packageWidth: product.packageWidth || "",
-        packageHeight: product.packageHeight || "",
-        warrantyType: product.warrantyType || "",
-        warrantyTime: product.warrantyTime || "",
-        warrantyPolicy: product.warrantyPolicy || "",
-        status: product.status || "",
+        title: p.title || "",
+        brand: p.brand?._id || "",
+        category: p.category?._id || "",
+        regularPrice: p.regularPrice.toString() || "",
+        discountPrice: p.discountPrice.toString() || "0",
+        stock: p.stock.toString() || "",
+        packageWeight: p.packageWeight || "",
+        packageLength: p.packageLength || "",
+        packageWidth: p.packageWidth || "",
+        packageHeight: p.packageHeight || "",
+        warrantyType: p.warrantyType || "",
+        warrantyTime: p.warrantyTime || "",
+        warrantyPolicy: p.warrantyPolicy || "",
+        status: p.status || "published",
         metaData: {
-          metaTitle: product.metaData?.metaTitle || "",
-          metaDescription: product.metaData?.metaDescription || "",
+          metaTitle: p.metaData?.metaTitle || "",
+          metaDescription: p.metaData?.metaDescription || "",
         },
       });
 
-      setImages(product.images || []);
-      setDescription(product.description || "");
-      setShortDescription(product.shortDescription || "");
-    }
-  }, [product]);
+      // Image structure check: API might return [{ url, public_id }] or File
+      const imageData = Array.isArray(p.images)
+        ? p.images.map((img) => {
+            // If you use a File uploader, you can skip this
+            return typeof img === "string" ? img : { ...img };
+          })
+        : [];
 
-  useEffect(() => {
-    dispatch(getSingleProduct(id));
-    dispatch(listCategory());
-    dispatch(listBrand());
-  }, [id, dispatch]);
+      setImages(imageData);
+      setDescription(p.description || "");
+      setShortDescription(p.shortDescription || "");
+    }
+  }, [productData]);
+
+  if (isProductLoading) {
+    return (
+      <div className="flex justify-center items-center h-[300px]">
+        <Loading text="Loading product..." />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full lg:w-3/4 mx-auto p-6 bg-white rounded-lg">
-      <h2 className="text-[24px] font-semibold text-[#111]">Add Product</h2>
-      <form className="pt-1">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+        Update Product
+      </h2>
+
+      <form onSubmit={handleSubmit}>
         <ProductInput
-          placeholder="Product Title"
           title="Product Name"
           name="title"
+          placeholder="Enter product name"
           value={formData.title}
           onChange={handleInputChange}
+          error={errors.title}
+          star={true}
         />
-        {errors.title && (
-          <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-        )}
 
-        {/* Category and Brand */}
-        <div className="flex gap-4 mt-4">
-          <div className="mb-4 w-full">
-            <label className="title">
-              Category <span className="text-red-500">*</span>
-            </label>
-            <select
-              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
-              name="category"
-              value={formData.category}
-              onChange={handleInputChange}
-            >
-              <option value="">Select category</option>
-              {listCategories?.map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-            {errors.category && (
-              <p className="text-red-500 text-sm mt-1">{errors.category}</p>
-            )}
-          </div>
-
-          <div className="mb-4 w-full">
-            <label className="title">
-              Brand <span className="text-red-500">*</span>
-            </label>
-            <select
-              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
-              name="brand"
-              value={formData.brand}
-              onChange={handleInputChange}
-            >
-              <option value="">Select brand</option>
-              {listAllBrands?.map((brand) => (
-                <option key={brand._id} value={brand._id}>
-                  {brand.name}
-                </option>
-              ))}
-            </select>
-            {errors.brand && (
-              <p className="text-red-500 text-sm mt-1">{errors.brand}</p>
-            )}
-          </div>
+        <div className="flex gap-4">
+          <ProductSelect
+            title="Category"
+            name="category"
+            star={true}
+            value={formData.category}
+            onChange={handleInputChange}
+            options={listCategories}
+            error={errors.category}
+          />
+          <ProductSelect
+            title="Brand"
+            name="brand"
+            star={true}
+            value={formData.brand}
+            onChange={handleInputChange}
+            options={listAllBrands}
+            error={errors.brand}
+          />
         </div>
 
-        {/* Image Uploader */}
         <div className="mb-4">
+          <label className="font-medium mb-2 block">
+            Product Images <span className="text-red-500">*</span>
+          </label>
           <ProductImageUploader images={images} setImages={setImages} />
           {errors.images && (
-            <p className="text-red-500 text-sm mt-1">{errors.images}</p>
+            <p className="text-red-500 text-xs mt-1">{errors.images}</p>
           )}
         </div>
 
-        {/* Description */}
         <div className="mb-4">
-          <label className="title">
+          <label className="font-medium mb-2 block">
             Description <span className="text-red-500">*</span>
           </label>
           <Editor description={description} setDescription={setDescription} />
           {errors.description && (
-            <p className="text-red-500 text-sm mt-1">{errors.description}</p>
+            <p className="text-red-500 text-xs mt-1">{errors.description}</p>
           )}
         </div>
 
         <div className="mb-4">
-          <label className="title">
+          <label className="font-medium mb-2 block">
             Short Description <span className="text-red-500">*</span>
           </label>
           <Highlights
@@ -224,220 +226,166 @@ const UpdateProduct = () => {
             setShortDescription={setShortDescription}
           />
           {errors.shortDescription && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="text-red-500 text-xs mt-1">
               {errors.shortDescription}
             </p>
           )}
         </div>
 
-        {/* Pricing */}
-        <div className="mb-4">
-          <h2 className="title text-lg text-black">Pricing</h2>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
-            <div className="">
-              <ProductInput
-                title="Regular Price"
-                placeholder="Regular Price"
-                name="regularPrice"
-                value={formData.regularPrice}
-                onChange={handleInputChange}
-              />
-              {errors.regularPrice && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.regularPrice}
-                </p>
-              )}
-            </div>
-            <ProductInput
-              title="Discount Price"
-              placeholder="Discount Price"
-              name="discountPrice"
-              value={formData.discountPrice}
-              onChange={handleInputChange}
-            />
-            <div className="">
-              <ProductInput
-                title="Stock"
-                placeholder="Stock"
-                name="stock"
-                value={formData.stock}
-                onChange={handleInputChange}
-              />
-              {errors.stock && (
-                <p className="text-red-500 text-sm mt-1">{errors.stock}</p>
-              )}
-            </div>
-          </div>
+        <div className="grid grid-cols-3 gap-2 mb-2">
+          <ProductInput
+            title="Regular Price"
+            name="regularPrice"
+            value={formData.regularPrice}
+            onChange={handleInputChange}
+            placeholder="e.g. 100"
+            error={errors.regularPrice}
+            star={true}
+          />
+          <ProductInput
+            title="Discount Price"
+            name="discountPrice"
+            value={formData.discountPrice}
+            onChange={handleInputChange}
+            placeholder="e.g. 90"
+          />
+          <ProductInput
+            title="Stock"
+            name="stock"
+            value={formData.stock}
+            onChange={handleInputChange}
+            placeholder="e.g. 50"
+            error={errors.stock}
+            star={true}
+          />
         </div>
+        <hr />
+        <h3 className="font-semibold mt-2 mb-2">Package Info</h3>
+        <div className="grid grid-cols-2 gap-x-3 mb-2">
+          <ProductInput
+            name="packageWeight"
+            title="Weight"
+            star={true}
+            value={formData.packageWeight}
+            onChange={handleInputChange}
+            error={errors.packageWeight}
+          />
+          <ProductInput
+            name="packageLength"
+            title="Length"
+            star={true}
+            value={formData.packageLength}
+            onChange={handleInputChange}
+            error={errors.packageLength}
+          />
+          <ProductInput
+            name="packageWidth"
+            title="Width"
+            star={true}
+            value={formData.packageWidth}
+            onChange={handleInputChange}
+            error={errors.packageWidth}
+          />
+          <ProductInput
+            name="packageHeight"
+            title="Height"
+            star={true}
+            value={formData.packageHeight}
+            onChange={handleInputChange}
+            error={errors.packageHeight}
+          />
+        </div>
+        <hr />
 
-        {/* Shipping & Warranty */}
-        <div className="mb-4">
-          <h2 className="title text-lg text-black">Shipping & Warranty</h2>
-          <div>
-            <div className="w-1/2">
-              <label className="title">
-                Package Weight {"(kg)"} <span className="text-red-500">*</span>
-              </label>
-              <ProductInput
-                placeholder="0.001 ~ 300"
-                name="packageWeight"
-                value={formData.packageWeight}
-                onChange={handleInputChange}
-              />
-              {errors.packageWeight && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.packageWeight}
-                </p>
-              )}
-            </div>
-
-            <div className="mt-4">
-              <label className="title">
-                Package Dimensions {"(inch)"} (L × W × H){" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <div className="flex items-center gap-2">
-                <div>
-                  <ProductInput
-                    className="bg-red-500"
-                    placeholder="Length"
-                    name="packageLength"
-                    value={formData.packageLength}
-                    onChange={handleInputChange}
-                  />
-                  {errors.packageLength && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.packageLength}
-                    </p>
-                  )}
-                </div>
-                <VscClose />
-                <div>
-                  <ProductInput
-                    placeholder="Width"
-                    name="packageWidth"
-                    value={formData.packageWidth}
-                    onChange={handleInputChange}
-                  />
-                  {errors.packageWidth && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.packageWidth}
-                    </p>
-                  )}
-                </div>
-                <VscClose />
-                <div>
-                  <ProductInput
-                    placeholder="Height"
-                    name="packageHeight"
-                    value={formData.packageHeight}
-                    onChange={handleInputChange}
-                  />
-                  {errors.packageHeight && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.packageHeight}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Warranty Section */}
-            <div className="w-1/2">
-              <div className="mt-4">
-                <label className="title">
-                  Warranty Type <span className="text-red-500">*</span>
-                </label>
-                <select
-                  name="warrantyType"
-                  value={formData.warrantyType}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
-                >
-                  <option value="">Select Type</option>
-                  <option value="no warranty">No Warranty</option>
-                  <option value="brand warranty">Brand Warranty</option>
-                  <option value="seller warranty">Seller Warranty</option>
-                </select>
-                {errors.warrantyType && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.warrantyType}
-                  </p>
-                )}
-              </div>
-
-              <div className="mt-4">
-                <ProductInput
-                  title="Warranty Time"
-                  placeholder="Warranty Time"
-                  name="warrantyTime"
-                  value={formData.warrantyTime}
-                  onChange={handleInputChange}
-                />
-
-                <div className="mt-4">
-                  <ProductInput
-                    title="Warranty Policy"
-                    placeholder="Warranty Policy"
-                    name="warrantyPolicy"
-                    value={formData.warrantyPolicy}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* Warranty */}
+        <div className="w-1/2">
+          <h3 className="font-semibold mt-2 mb-2">Warranty Info</h3>
+          <ProductSelect
+            title="Warranty Type"
+            name="warrantyType"
+            value={formData.warrantyType}
+            options={[
+              { _id: "no warranty", name: "No Warranty" },
+              { _id: "brand warranty", name: "Brand Warranty" },
+              { _id: "seller warranty", name: "Seller Warranty" },
+            ]}
+            star={true}
+            onChange={handleInputChange}
+            error={errors.warrantyType}
+          />
+          <ProductSelect
+            title="Warranty Time"
+            name="warrantyTime"
+            value={formData.warrantyTime}
+            options={warrantyData}
+            onChange={handleInputChange}
+            error={errors.warrantyTime}
+          />
+          <ProductInput
+            name="warrantyPolicy"
+            title="Warranty Policy"
+            value={formData.warrantyPolicy}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* Status */}
-        <div className="mb-4 w-1/2">
-          <label className="title">Status</label>
-          <select
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            name="status"
-            value={formData.status}
-            onChange={handleInputChange}
-          >
-            <option value="">Select status</option>
-            <option value="published">Published</option>
-            <option value="unpublished">Unpublished</option>
-          </select>
-        </div>
+        <ProductSelect
+          title="Status"
+          name="status"
+          value={formData.status}
+          options={[
+            { _id: "published", name: "Published" },
+            { _id: "unpublished", name: "Unpublished" },
+          ]}
+          star={true}
+          onChange={handleInputChange}
+          error={errors.status}
+        />
 
-        {/* SEO Section */}
-        <div className="mb-4">
-          <h2 className="title text-lg text-black">SEO Section</h2>
-          <ProductInput
-            title="Meta Title"
-            placeholder="Meta Title"
-            name="metaTitle"
-            value={formData.metaData.metaTitle}
+        {/* SEO */}
+        <h3 className="font-semibold mt-4">SEO Metadata</h3>
+        <ProductInput
+          name="metaTitle"
+          title="Meta Title"
+          placeholder="Meta title here..."
+          star={true}
+          value={formData.metaData.metaTitle}
+          onChange={handleInputChange}
+          error={errors["metaData.metaTitle"]}
+        />
+        <div className="">
+          <label className="font-medium block" htmlFor="metaDescription">
+            Meta Description <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            name="metaDescription"
+            id="metaDescription"
+            rows="4"
+            value={formData.metaData.metaDescription}
             onChange={handleInputChange}
+            placeholder="Meta description here..."
+            className={`w-full border mt-2 p-2 focus:outline-none focus:ring focus:ring-blue-500 rounded-sm text-sm ${
+              errors["metaData.metaDescription"] && "border-red-500"
+            }`}
           />
-
-          <div className="mt-4">
-            <label className="title">
-              Meta Description <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              name="metaDescription"
-              value={formData.metaData.metaDescription}
-              onChange={handleInputChange}
-              placeholder="Enter Meta Description"
-              className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
-          </div>
+          {errors["metaData.metaDescription"] && (
+            <p className="text-red-500 text-xs mt-1">
+              {errors["metaData.metaDescription"]}
+            </p>
+          )}
         </div>
 
-        {/* Submit Button */}
-        <div className="flex justify-end mt-6">
+        {/* Submit */}
+        <div className="mt-6 text-right">
           <button
-            // disabled={isLoading}
-            onClick={handleSubmit}
             type="submit"
-            className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600"
+            disabled={isUpdating}
+            className={`bg-blue-600 text-white px-6 py-2 rounded ${
+              isUpdating ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+            }`}
           >
-            {isLoading ? <Loading text={"Submitting"} /> : "Update Product"}
+            {isUpdating ? <Loading text="Updating..." /> : "Update Product"}
           </button>
         </div>
       </form>

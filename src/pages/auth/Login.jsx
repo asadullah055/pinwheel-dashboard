@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import Loading from "../../components/Loading";
-import { login, messageClear } from "../../features/auth/authSlice"; // Import the action
+import Loading from "../../components/Loading"; /*
+import { useLoginMutation } from "../../features/auth/authApi";
+import { setCredentials } from "../../features/auth/authSlice"; */
+import { useLoginMutation } from "../../features/auth/authApi";
+import { setCredentials } from "../../features/auth/authSlice";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,9 +16,9 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { successMessage, errorMessage, isLoading } = useSelector(
-    (state) => state.auth
-  );
+
+  const [login, { data, error, isLoading, isSuccess }] = useLoginMutation();
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -29,20 +32,25 @@ const Login = () => {
       toast.error("Please fill in all fields");
       return;
     }
-    await dispatch(login(formData)).unwrap();
-    navigate("/");
-  };
-  useEffect(() => {
-    if (successMessage) {
-      toast.success(successMessage);
-      dispatch(messageClear());
+
+    try {
+      const userData = await login(formData).unwrap(); // Optional unwrap()
+      dispatch(setCredentials(userData));
       navigate("/");
+    } catch (err) {
+      // Error handled in useEffect
     }
-    if (errorMessage) {
-      toast.error(errorMessage);
-      dispatch(messageClear());
+  };
+
+  useEffect(() => {
+    if (isSuccess && data?.message) {
+      toast.success(data.message);
     }
-  }, [successMessage, errorMessage, dispatch, navigate]);
+
+    if (error) {
+      toast.error(error?.data?.message || "Login failed");
+    }
+  }, [data, error, isSuccess]);
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#F2F7FB]">
@@ -50,8 +58,8 @@ const Login = () => {
         <h2 className="text-2xl font-bold text-center mb-4">
           Login to Pinwheel
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
             <label className="block text-[16px] font-bold text-gray-700">
               Email<span className="font-bold text-[20px] text-red-600">*</span>
             </label>
@@ -61,10 +69,10 @@ const Login = () => {
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <div>
+          <div className="mb-2">
             <label className="block text-[16px] font-bold text-gray-700">
               Password
               <span className="font-bold text-[20px] text-red-600">*</span>
@@ -75,10 +83,15 @@ const Login = () => {
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-
+          <Link
+            to="/seller/forgot-password"
+            className="text-blue-600 text-sm hover:underline mb-2 block text-end"
+          >
+            Forgot Password?
+          </Link>
           <button
             type="submit"
             disabled={isLoading}

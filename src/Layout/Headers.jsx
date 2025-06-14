@@ -1,4 +1,3 @@
-import React from "react";
 import { FiMenu } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import LogoutButton from "../components/LogoutButton";
@@ -13,11 +12,11 @@ const Headers = ({ showHide }) => {
           <button className="md:hidden block text-2xl" onClick={showHide}>
             <FiMenu />
           </button>
-          <input
+          {/* <input
             type="text"
             placeholder="Type to search..."
             className="border rounded-sm p-2 "
-          />
+          /> */}
         </div>
 
         <div className="flex items-center space-x-4">

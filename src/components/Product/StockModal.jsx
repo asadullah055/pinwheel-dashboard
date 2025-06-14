@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
-import { useDispatch } from "react-redux";
-import { updatePriceAndStock } from "../../features/product/productSlice";
+import { useUpdatePriceAndStockMutation } from "../../features/product/productApi";
 
 const StockModal = ({ product, closeStockModal }) => {
   const [stock, setStock] = useState(product.stock);
 
-  const dispatch = useDispatch();
+  const [updatePriceAndStock, { isLoading }] = useUpdatePriceAndStockMutation();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (stock === "") {
       toast.error("Please enter a stock value");
       return;
@@ -18,18 +19,16 @@ const StockModal = ({ product, closeStockModal }) => {
       toast.error("Stock cannot be negative");
       return;
     }
+
     try {
-      const response = await dispatch(
-        updatePriceAndStock({
-          id: product._id,
-          stock: stock,
-        })
-      ).unwrap();
-      // Assuming response contains message
-      toast.success(response.message);
+      const res = await updatePriceAndStock({
+        id: product._id,
+        stock: Number(stock),
+      }).unwrap();
+      toast.success(res?.message || "Stock updated successfully");
       closeStockModal();
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.data?.message || "Failed to update stock");
     }
   };
 
@@ -62,21 +61,19 @@ const StockModal = ({ product, closeStockModal }) => {
               </p>
             </div>
 
-            {/* Product Retail Price */}
+            {/* Stock Input */}
             <div className="flex flex-col">
               <label className="text-sm font-medium mb-1">Stock</label>
               <div className="flex items-center border rounded-md bg-white">
-                <span className="px-2 text-gray-500">৳</span>
                 <input
-                  type="text"
+                  type="number"
+                  min="0"
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
                   className="p-2 w-full outline-none rounded-md"
                 />
               </div>
             </div>
-
-            {/* Daily Discount Price */}
           </div>
         </div>
 
@@ -90,9 +87,10 @@ const StockModal = ({ product, closeStockModal }) => {
           </button>
           <button
             onClick={handleSubmit}
-            className="px-5 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
+            disabled={isLoading}
+            className="px-5 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 disabled:opacity-50"
           >
-            OK
+            {isLoading ? "Updating..." : "OK"}
           </button>
         </div>
       </div>

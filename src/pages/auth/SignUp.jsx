@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
-import { messageClear, register } from "../../features/auth/authSlice";
+import { useRegisterMutation } from "../../features/auth/authApi";
 
 const SignUp = () => {
-  const { successMessage, errorMessage, isLoading } = useSelector(
-    (state) => state.auth
-  );
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    role: "seller",
+    role: "seller", // Default role
   });
+
+  // RTK Query mutation
+  const [registerUser, { data, error, isLoading, isSuccess }] = useRegisterMutation();
 
   const handleChange = (e) => {
     setFormData({
@@ -36,6 +35,7 @@ const SignUp = () => {
       toast.error("Please fill in all required fields.");
       return;
     }
+
     if (!/\S+@\S+\.\S+/.test(email)) {
       toast.error("Please enter a valid email.");
       return;
@@ -45,37 +45,40 @@ const SignUp = () => {
       toast.error("Passwords do not match.");
       return;
     }
+
     const payload = {
       name,
       email,
       password,
-      role: formData.role, // if you still need it
+      role: formData.role,
     };
 
-    await dispatch(register(payload)).unwrap();
+    try {
+      await registerUser(payload).unwrap(); // await because we handle error via try-catch
+    } catch (err) {
+      // Do nothing - handled in useEffect
+    }
   };
+
   useEffect(() => {
-    if (successMessage) {
-      toast.success(successMessage);
-      dispatch(messageClear());
+    if (isSuccess && data?.message) {
+      toast.success(data.message || "Account created successfully!");
       navigate("/seller/login");
     }
-    if (errorMessage) {
-      toast.error(errorMessage);
-      dispatch(messageClear());
+
+    if (error) {
+      toast.error(error?.data?.message || "Registration failed");
     }
-  }, [successMessage, errorMessage, dispatch, navigate]);
+  }, [data, error, isSuccess, navigate]);
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#F2F7FB]">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-4">
-          Sign Up to Pinwheel
-        </h2>
+        <h2 className="text-2xl font-bold text-center mb-4">Sign Up to Pinwheel</h2>
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
             <label className="block text-[16px] font-bold text-gray-700">
-              Your Name
-              <span className="font-bold text-[20px] text-red-600">*</span>
+              Your Name <span className="text-red-600 text-[20px]">*</span>
             </label>
             <input
               type="text"
@@ -83,12 +86,12 @@ const SignUp = () => {
               placeholder="Enter your full name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
             <label className="block text-[16px] font-bold text-gray-700">
-              Email<span className="font-bold text-[20px] text-red-600">*</span>
+              Email <span className="text-red-600 text-[20px]">*</span>
             </label>
             <input
               type="email"
@@ -96,13 +99,12 @@ const SignUp = () => {
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
             <label className="block text-[16px] font-bold text-gray-700">
-              Password
-              <span className="font-bold text-[20px] text-red-600">*</span>
+              Password <span className="text-red-600 text-[20px]">*</span>
             </label>
             <input
               type="password"
@@ -110,13 +112,12 @@ const SignUp = () => {
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div>
             <label className="block text-[16px] font-bold text-gray-700">
-              Re-type Password
-              <span className="font-bold text-[20px] text-red-600">*</span>
+              Re-type Password <span className="text-red-600 text-[20px]">*</span>
             </label>
             <input
               type="password"
@@ -124,7 +125,7 @@ const SignUp = () => {
               placeholder="Re-enter your password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <button
@@ -132,7 +133,7 @@ const SignUp = () => {
             disabled={isLoading}
             className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
           >
-            {isLoading ? <Loading text={"Submitting...."} /> : "Create account"}
+            {isLoading ? <Loading text={"Submitting..."} /> : "Create account"}
           </button>
         </form>
         <div className="mt-2">

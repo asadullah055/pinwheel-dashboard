@@ -1,62 +1,62 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { BsImage } from "react-icons/bs";
-import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../components/Loading";
-import { createCategory } from "../../features/category/categorySlice";
+import { useCreateCategoryMutation } from "../../features/category/categoryApi";  
 
 const CreateCategory = () => {
-  const [imageShow, setImage] = useState("");
+  const [imageShow, setImageShow] = useState("");
   const [state, setState] = useState({
     name: "",
     image: "",
   });
-  const { successMessage, errorMessage, isLoading } = useSelector(
-    (state) => state.category
-  );
-  const dispatch = useDispatch();
 
+  // 👉 RTK Query Hook
+  const [createCategory, { isLoading }] = useCreateCategoryMutation();
+
+  // Handle Image Upload/Preview
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
+
     if (file) {
-      setImage(URL.createObjectURL(file));
+      setImageShow(URL.createObjectURL(file));
+      setState((prev) => ({
+        ...prev,
+        image: file,
+      }));
     }
-    setState({
-      ...state,
-      image: file,
-    });
   };
+
+  // Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("name", state.name);
-    formData.append("image", state.image);
+
     if (!state.name || !state.image) {
       toast.error("Please fill in all fields");
       return;
     }
-    await dispatch(createCategory(formData)).unwrap();
+
+    const formData = new FormData();
+    formData.append("name", state.name);
+    formData.append("image", state.image);
+
+    try {
+      const res = await createCategory(formData).unwrap();
+      toast.success(res?.message || "Category created successfully");
+
+      // Optional: Reset form
+      setState({ name: "", image: "" });
+      setImageShow("");
+    } catch (err) {
+      toast.error(err?.data?.message || "Something went wrong");
+    }
   };
-  /* useEffect(() => {
-    if (successMessage) {
-      toast.success(successMessage);
-      dispatch(messageClear());
-      // clear state
-      setState({
-        name: "",
-        image: "",
-      });
-      setImage("");
-    }
-    if (errorMessage) {
-      toast.error(errorMessage);
-      dispatch(messageClear());
-    }
-  }, [successMessage, errorMessage]); */
+
   return (
     <div className="w-full md:w-3/4 lg:w-1/2 mx-auto p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-[24px] font-semibold text-[#111] ">Add Category</h2>
-      <form className="pt-1">
+      <form className="pt-1" onSubmit={handleSubmit}>
+        {/* Name */}
         <div className="mb-4">
           <label className="block text-[17px] font-semibold text-[#111] mb-1">
             Category Name <span className="text-red-500">*</span>
@@ -66,52 +66,50 @@ const CreateCategory = () => {
             placeholder="Category name"
             value={state.name}
             onChange={(e) => setState({ ...state, name: e.target.value })}
-            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:border-blue-500"
-            required
+            className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-none focus:border-blue-500"
           />
         </div>
 
+        {/* Image Upload */}
         <div className="mb-6">
           <label className="block text-[17px] font-semibold text-[#111] mb-1">
             Upload Image <span className="text-red-500">*</span>
           </label>
-
           <div className="flex justify-center">
-            <div>
-              <label
-                className="flex justify-center items-center flex-col h-[200px] w-[250px] cursor-pointer border-2 border-dashed rounded-sm  border-[#d0d2d6]"
-                htmlFor="image"
-              >
-                {imageShow ? (
-                  <img className="w-full h-full" src={imageShow} />
-                ) : (
-                  <>
-                    <span>
-                      <BsImage />
-                    </span>
-                    <span>select Image</span>
-                  </>
-                )}
-              </label>
-            </div>
+            <label
+              htmlFor="image"
+              className="flex justify-center items-center flex-col h-[200px] w-[250px] cursor-pointer border-2 border-dashed rounded-sm border-[#d0d2d6]"
+            >
+              {imageShow ? (
+                <img
+                  className="w-full h-full object-cover"
+                  src={imageShow}
+                  alt="Preview"
+                />
+              ) : (
+                <>
+                  <BsImage className="text-4xl" />
+                  <span>Select Image</span>
+                </>
+              )}
+            </label>
             <input
-              onChange={handleImageUpload}
-              className="hidden"
               type="file"
-              name="image"
               id="image"
-              required
+              accept="image/*"
+              className="hidden"
+              onChange={handleImageUpload}
             />
           </div>
         </div>
 
+        {/* Submit Button */}
         <button
           type="submit"
-          onClick={handleSubmit}
           disabled={isLoading}
-          className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-hidden "
+          className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none"
         >
-          {isLoading ? <Loading text={"Submitting...."} /> : "Submit"}
+          {isLoading ? <Loading text={"Submitting..."} /> : "Submit"}
         </button>
       </form>
     </div>
