@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useGetAllBrandsQuery } from "../../features/Brand/brandApi";
+import Loader from "../Loader";
 import Pagination from "../Pagination";
 import SingleBrand from "./SingleBrand";
 
-const BrandList = ({
-  AllBrands,
-  setCurrentPage,
-  setPerPage,
-  currentPage,
-  perPage,
-  totalBrands,
-}) => {
-  const [brands, setBrands] = useState(AllBrands);
+const BrandList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
+  const { data, isLoading, isError, error } = useGetAllBrandsQuery({
+    page: currentPage,
+    limit: perPage,
+  });
+  const brands = data?.brands || [];
+  const totalBrands = data?.totalBrands || 0;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -52,11 +51,33 @@ const BrandList = ({
           </tr>
         </thead>
         <tbody>
-          {brands.map((brand) => (
-            <SingleBrand key={brand._id} brand={brand} />
-          ))}
+          {!isLoading &&
+            !isError &&
+            brands.length > 0 &&
+            brands.map((brand) => (
+              <SingleBrand key={brand._id} brand={brand} />
+            ))}
         </tbody>
       </table>
+      {isLoading && (
+        <div className="flex items-center justify-center">
+          <Loader />
+        </div>
+      )}
+      {/* Error Message */}
+      {isError && (
+        <div className="text-center py-10">
+          <p className="text-red-500">
+            {error?.data?.message || "Something went wrong!"}
+          </p>
+        </div>
+      )}
+      {/* No Brands Found */}
+      {!isLoading && !isError && brands.length === 0 && (
+        <div className="text-center py-10">
+          <p className="text-gray-500">No Brands found</p>
+        </div>
+      )}
       {totalBrands > perPage && (
         <Pagination
           currentPage={currentPage}

@@ -15,6 +15,7 @@ import { validateProductForm } from "../../../utils/validateProductForm";
 
 // Redux RTK Queries
 import { warrantyData } from "../../../utils/warrantyData";
+import Loader from "../../components/Loader";
 import ProductSelect from "../../components/Product/ProductSelect";
 import { useGetDropdownBrandsQuery } from "../../features/Brand/brandApi";
 import { useGetDropdownCategoriesQuery } from "../../features/category/categoryApi";
@@ -153,8 +154,8 @@ const UpdateProduct = () => {
 
   if (isProductLoading) {
     return (
-      <div className="flex justify-center items-center h-[300px]">
-        <Loading text="Loading product..." />
+      <div className="flex justify-center items-center h-screen">
+        <Loader />
       </div>
     );
   }
@@ -381,7 +382,7 @@ const UpdateProduct = () => {
           <button
             type="submit"
             disabled={isUpdating}
-            className={`bg-blue-600 text-white px-6 py-2 rounded ${
+            className={`bg-blue-600 text-white px-6 py-2 rounded cursor-pointer ${
               isUpdating ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
             }`}
           >

@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import { useGetAllCategoriesQuery } from "../../features/category/categoryApi";
+import Loader from "../Loader";
 import Pagination from "../Pagination";
 import SingleCategory from "./SingleCategory";
 
-const CategoryList = ({
-  allCategory,
-  setCurrentPage,
-  setPerPage,
-  currentPage,
-  perPage,
-  totalCategory,
-}) => {
-  const [categories, setCategories] = useState(allCategory);
+const CategoryList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
+  const { data, isLoading, isError, error } = useGetAllCategoriesQuery({
+    page: currentPage,
+    limit: perPage,
+  });
+  const categories = data?.categories || [];
+  const totalCategory = data?.totalCategory || 0;
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -52,11 +52,34 @@ const CategoryList = ({
           </tr>
         </thead>
         <tbody>
-          {categories.map((category) => (
-            <SingleCategory key={category._id} category={category} />
-          ))}
+          {!isLoading &&
+            !isError &&
+            categories.length > 0 &&
+            categories.map((category) => (
+              <SingleCategory key={category._id} category={category} />
+            ))}
         </tbody>
       </table>
+      {isLoading && (
+        <div className="flex items-center justify-center">
+          <Loader />
+        </div>
+      )}
+      {/* Error Message */}
+      {isError && (
+        <div className="text-center py-10">
+          <p className="text-red-500">
+            {error?.data?.message || "Something went wrong!"}
+          </p>
+        </div>
+      )}
+      {/* No categories Found */}
+      {!isLoading && !isError && categories.length === 0 && (
+        <div className="text-center py-10">
+          <p className="text-gray-500">No categories found</p>
+        </div>
+      )}
+
       {totalCategory > perPage && (
         <Pagination
           currentPage={currentPage}

@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { clearCredentials } from "../auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl:
@@ -13,7 +14,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   if (result.error && result.error.status === 401) {
     // Try refreshing the token
     const refreshResult = await baseQuery("/auth/refresh", api, extraOptions);
-
     if (refreshResult.data) {
       // Try original request again
       result = await baseQuery(args, api, extraOptions);
@@ -23,7 +23,6 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
       window.location.href = "/seller/login";
     }
   }
-
   return result;
 };
 

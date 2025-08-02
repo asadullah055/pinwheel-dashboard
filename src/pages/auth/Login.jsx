@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import Loading from "../../components/Loading"; /*
-import { useLoginMutation } from "../../features/auth/authApi";
-import { setCredentials } from "../../features/auth/authSlice"; */
+import Loading from "../../components/Loading";
 import { useLoginMutation } from "../../features/auth/authApi";
 import { setCredentials } from "../../features/auth/authSlice";
 
@@ -34,10 +32,11 @@ const Login = () => {
     }
 
     try {
-      const userData = await login(formData).unwrap(); // Optional unwrap()
+      const userData = await login(formData).unwrap();
       dispatch(setCredentials(userData));
       navigate("/");
     } catch (err) {
+      console.log("Login error:", err);
       // Error handled in useEffect
     }
   };

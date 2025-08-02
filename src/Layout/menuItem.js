@@ -25,7 +25,7 @@ export const navMenu = [
       },
       {
         id: "2-2",
-        title: "Brand List",
+        title: "Manage Brand",
         path: "/brand/list",
       },
     ],
@@ -43,7 +43,7 @@ export const navMenu = [
       },
       {
         id: "3-2",
-        title: "Category List",
+        title: "Manage Category",
         path: "/category/list",
       },
     ],
@@ -61,7 +61,7 @@ export const navMenu = [
       },
       {
         id: "4-2",
-        title: "Product List",
+        title: "Manage Product",
         path: "/product/list",
       },
     ],
@@ -73,7 +73,7 @@ export const navMenu = [
     child: [
       {
         id: "5-1",
-        title: "Order List",
+        title: "Manage Order",
         path: "/order/list",
       },
       {

@@ -120,173 +120,208 @@ const CreateProduct = () => {
   };
 
   return (
-    <div className="w-full lg:w-3/4 mx-auto p-6 bg-white rounded-lg">
-      <h2 className="text-2xl font-semibold text-[#111] mb-4">Add Product</h2>
-
+    <div className="w-full lg:w-3/4 ms-4 p-6 rounded-lg">
+      <h2 className="text-xl lg:text-4xl font-semibold text-[#111] mb-4">
+        Add Product
+      </h2>
       <form onSubmit={handleSubmit}>
-        <ProductInput
-          title="Product Name"
-          placeholder="Product Title"
-          name="title"
-          value={formData.title}
-          onChange={handleInputChange}
-          error={errors.title}
-          star={true}
-        />
+        {/* Basic Information */}
+        <div className="border border-gray-300 rounded bg-white">
+          <p className="p-4 font-semibold text-gray-800 bg-gray-200 ">
+            Basic Information
+          </p>
+          <div className="p-4">
+            <ProductInput
+              title="Product Name"
+              placeholder="Product Title"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              error={errors.title}
+              star={true}
+            />
 
-        <div className="flex gap-4">
-          <ProductSelect
-            title="Category"
-            name="category"
-            star={true}
-            value={formData.category}
-            onChange={handleInputChange}
-            options={listCategories}
-            error={errors.category}
-          />
-          <ProductSelect
-            title="Brand"
-            name="brand"
-            star={true}
-            value={formData.brand}
-            onChange={handleInputChange}
-            options={listAllBrands}
-            error={errors.brand}
-          />
+            <div className="flex gap-4">
+              <ProductSelect
+                title="Category"
+                name="category"
+                star={true}
+                value={formData.category}
+                onChange={handleInputChange}
+                options={listCategories}
+                error={errors.category}
+              />
+              <ProductSelect
+                title="Brand"
+                name="brand"
+                star={true}
+                value={formData.brand}
+                onChange={handleInputChange}
+                options={listAllBrands}
+                error={errors.brand}
+              />
+            </div>
+            {/* image upload */}
+            <div className="mb-4">
+              <label className="font-medium mb-2 block">
+                Product Images <span className="text-red-500">*</span>
+              </label>
+              <ProductImageUploader images={images} setImages={setImages} />
+              {errors.images && (
+                <p className="text-red-500 text-xs mt-1">{errors.images}</p>
+              )}
+            </div>
+          </div>
+        </div>
+        {/*  Description Highlight*/}
+        <div className="border border-gray-300 rounded bg-white mt-4">
+          <p className="p-4 font-semibold text-gray-800 bg-gray-200 ">
+            Description and Highlight
+          </p>
+          <div className="p-4">
+            {/* Description */}
+            <div className="mb-4">
+              <label className="font-medium mb-2 block">
+                Description <span className="text-red-500">*</span>
+              </label>
+              <Editor
+                description={description}
+                setDescription={setDescription}
+              />
+              {errors.description && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.description}
+                </p>
+              )}
+            </div>
+            {/* Short Description */}
+            <div className="mb-4">
+              <label className="font-medium mb-2 block">
+                Short Description <span className="text-red-500">*</span>
+              </label>
+              <Highlights
+                shortDescription={shortDescription}
+                setShortDescription={setShortDescription}
+              />
+              {errors.shortDescription && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.shortDescription}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+        {/* Price, Stock & Variants */}
+        <div className="border border-gray-300 rounded bg-white mt-4">
+          <p className="p-4 font-semibold text-gray-800 bg-gray-200 ">
+            Price, Stock & Variants
+          </p>
+          <div className="p-4">
+            <div className="grid grid-cols-3 gap-2 mb-2">
+              <ProductInput
+                title="Regular Price"
+                name="regularPrice"
+                value={formData.regularPrice}
+                onChange={handleInputChange}
+                placeholder="e.g. 100"
+                error={errors.regularPrice}
+                star={true}
+              />
+              <ProductInput
+                title="Discount Price"
+                name="discountPrice"
+                value={formData.discountPrice}
+                onChange={handleInputChange}
+                placeholder="e.g. 90"
+              />
+              <ProductInput
+                title="Stock"
+                name="stock"
+                value={formData.stock}
+                onChange={handleInputChange}
+                placeholder="e.g. 50"
+                error={errors.stock}
+                star={true}
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="mb-4">
-          <label className="font-medium mb-2 block">
-            Product Images <span className="text-red-500">*</span>
-          </label>
-          <ProductImageUploader images={images} setImages={setImages} />
-          {errors.images && (
-            <p className="text-red-500 text-xs mt-1">{errors.images}</p>
-          )}
-        </div>
+        <div className="border border-gray-300 rounded bg-white mt-4">
+          <p className="p-4 font-semibold text-gray-800 bg-gray-200 ">
+            Service & Warranty
+          </p>
+          <div className="p-4">
+            <div className="w-1/2">
+              <h3 className="font-semibold mt-2 mb-2">Warranty Info</h3>
+              <ProductSelect
+                title="Warranty Type"
+                name="warrantyType"
+                value={formData.warrantyType}
+                options={[
+                  { _id: "no warranty", name: "No Warranty" },
+                  { _id: "brand warranty", name: "Brand Warranty" },
+                  { _id: "seller warranty", name: "Seller Warranty" },
+                ]}
+                star={true}
+                onChange={handleInputChange}
+                error={errors.warrantyType}
+              />
+              <ProductSelect
+                title="Warranty Time"
+                name="warrantyTime"
+                value={formData.warrantyTime}
+                options={warrantyData}
+                onChange={handleInputChange}
+                error={errors.warrantyTime}
+              />
+              <ProductInput
+                name="warrantyPolicy"
+                title="Warranty Policy"
+                value={formData.warrantyPolicy}
+                onChange={handleInputChange}
+              />
+            </div>
 
-        <div className="mb-4">
-          <label className="font-medium mb-2 block">
-            Description <span className="text-red-500">*</span>
-          </label>
-          <Editor description={description} setDescription={setDescription} />
-          {errors.description && (
-            <p className="text-red-500 text-xs mt-1">{errors.description}</p>
-          )}
+            {/* Package Info */}
+            <h3 className="font-semibold mt-2 mb-2">Package Info</h3>
+            <div className="grid grid-cols-2 gap-x-3 mb-2">
+              <ProductInput
+                name="packageWeight"
+                title="Weight"
+                star={true}
+                value={formData.packageWeight}
+                onChange={handleInputChange}
+                error={errors.packageWeight}
+              />
+              <ProductInput
+                name="packageLength"
+                title="Length"
+                star={true}
+                value={formData.packageLength}
+                onChange={handleInputChange}
+                error={errors.packageLength}
+              />
+              <ProductInput
+                name="packageWidth"
+                title="Width"
+                star={true}
+                value={formData.packageWidth}
+                onChange={handleInputChange}
+                error={errors.packageWidth}
+              />
+              <ProductInput
+                name="packageHeight"
+                title="Height"
+                star={true}
+                value={formData.packageHeight}
+                onChange={handleInputChange}
+                error={errors.packageHeight}
+              />
+            </div>
+          </div>
         </div>
-
-        <div className="mb-4">
-          <label className="font-medium mb-2 block">
-            Short Description <span className="text-red-500">*</span>
-          </label>
-          <Highlights
-            shortDescription={shortDescription}
-            setShortDescription={setShortDescription}
-          />
-          {errors.shortDescription && (
-            <p className="text-red-500 text-xs mt-1">
-              {errors.shortDescription}
-            </p>
-          )}
-        </div>
-
-        <div className="grid grid-cols-3 gap-2 mb-2">
-          <ProductInput
-            title="Regular Price"
-            name="regularPrice"
-            value={formData.regularPrice}
-            onChange={handleInputChange}
-            placeholder="e.g. 100"
-            error={errors.regularPrice}
-            star={true}
-          />
-          <ProductInput
-            title="Discount Price"
-            name="discountPrice"
-            value={formData.discountPrice}
-            onChange={handleInputChange}
-            placeholder="e.g. 90"
-          />
-          <ProductInput
-            title="Stock"
-            name="stock"
-            value={formData.stock}
-            onChange={handleInputChange}
-            placeholder="e.g. 50"
-            error={errors.stock}
-            star={true}
-          />
-        </div>
-
-        <hr />
-        {/* Package Info */}
-        <h3 className="font-semibold mt-2 mb-2">Package Info</h3>
-        <div className="grid grid-cols-2 gap-x-3 mb-2">
-          <ProductInput
-            name="packageWeight"
-            title="Weight"
-            star={true}
-            value={formData.packageWeight}
-            onChange={handleInputChange}
-            error={errors.packageWeight}
-          />
-          <ProductInput
-            name="packageLength"
-            title="Length"
-            star={true}
-            value={formData.packageLength}
-            onChange={handleInputChange}
-            error={errors.packageLength}
-          />
-          <ProductInput
-            name="packageWidth"
-            title="Width"
-            star={true}
-            value={formData.packageWidth}
-            onChange={handleInputChange}
-            error={errors.packageWidth}
-          />
-          <ProductInput
-            name="packageHeight"
-            title="Height"
-            star={true}
-            value={formData.packageHeight}
-            onChange={handleInputChange}
-            error={errors.packageHeight}
-          />
-        </div>
-        <hr />
         {/* Warranty */}
-        <div className="w-1/2">
-          <h3 className="font-semibold mt-2 mb-2">Warranty Info</h3>
-          <ProductSelect
-            title="Warranty Type"
-            name="warrantyType"
-            value={formData.warrantyType}
-            options={[
-              { _id: "no warranty", name: "No Warranty" },
-              { _id: "brand warranty", name: "Brand Warranty" },
-              { _id: "seller warranty", name: "Seller Warranty" },
-            ]}
-            star={true}
-            onChange={handleInputChange}
-            error={errors.warrantyType}
-          />
-          <ProductSelect
-            title="Warranty Time"
-            name="warrantyTime"
-            value={formData.warrantyTime}
-            options={warrantyData}
-            onChange={handleInputChange}
-            error={errors.warrantyTime}
-          />
-          <ProductInput
-            name="warrantyPolicy"
-            title="Warranty Policy"
-            value={formData.warrantyPolicy}
-            onChange={handleInputChange}
-          />
-        </div>
 
         {/* Status */}
         <ProductSelect

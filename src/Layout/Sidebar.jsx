@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { GoDotFill } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
 import { useSelector } from "react-redux";
@@ -51,7 +51,7 @@ const Sidebar = ({ show }) => {
                     }`}
                     onClick={() => toggleMenu(nav.id)}
                   >
-                    <Link className="text-[18px] w-full" to={nav.path}>
+                    <Link className="text-[14px] w-full" to={nav.path}>
                       <div className="flex items-center gap-2">
                         <span>{<nav.icon />}</span> {nav.title}
                       </div>
@@ -75,7 +75,7 @@ const Sidebar = ({ show }) => {
                           <li key={item.id} className="py-1 ml-3">
                             <Link
                               to={item.path}
-                              className={`font-semibold hover:text-white transition-all duration-300 ${
+                              className={`font-semibold text-[14px] hover:text-white transition-all duration-300 ${
                                 location.pathname === item.path
                                   ? "text-white "
                                   : "text-[#8A99AF]"

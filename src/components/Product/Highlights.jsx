@@ -14,6 +14,7 @@ const Highlights = ({ setShortDescription, shortDescription }) => {
     toolbarSticky: false,
     buttons: ["ul"],
   };
+
   return (
     <JoditEditor
       ref={editor2}

@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import {
   FLUSH,
   PAUSE,
@@ -8,28 +8,25 @@ import {
   PURGE,
   REGISTER,
   REHYDRATE,
-} from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 // 👇 RTK Query APIs
-import { authApi } from '../features/auth/authApi';
-import { productApi } from '../features/product/productApi';
+import { authApi } from "../features/auth/authApi";
+import { productApi } from "../features/product/productApi";
 
 // 👇 Redux slices
-import { apiSlice } from '../features/api/apiSlice';
-import authReducer from '../features/auth/authSlice';
-import brandReducer from '../features/Brand/brandslice';
-import categoryReducer from '../features/category/categorySlice';
-import productReducer from '../features/product/productSlice';
+import { apiSlice } from "../features/api/apiSlice";
+import authReducer from "../features/auth/authSlice";
+import brandReducer from "../features/Brand/brandslice";
+import categoryReducer from "../features/category/categorySlice";
+import productReducer from "../features/product/productSlice";
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
-  whitelist: ['auth'], 
-  blacklist: [
-    authApi.reducerPath,
-    productApi.reducerPath,
-  ],
+  whitelist: ["auth"],
+  blacklist: [authApi.reducerPath, productApi.reducerPath],
 };
 
 // 👇 Combine reducers including RTK Query reducers
@@ -38,6 +35,7 @@ const rootReducer = combineReducers({
   product: productReducer,
   brand: brandReducer,
   category: categoryReducer,
+  [authApi.reducerPath]: authApi.reducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });
 
@@ -47,7 +45,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 // 👇 Create store with middleware
 const store = configureStore({
   reducer: persistedReducer,
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: process.env.NODE_ENV !== "production",
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -55,6 +53,7 @@ const store = configureStore({
       },
     })
       .concat(apiSlice.middleware)
+      .concat(authApi.middleware),
 });
 
 export const persistor = persistStore(store);
