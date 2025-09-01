@@ -1,7 +1,7 @@
 import { BsBagPlus } from "react-icons/bs";
 import { FiLayers, FiUser } from "react-icons/fi";
 import { GrUserAdmin } from "react-icons/gr";
-import { MdOutlineProductionQuantityLimits } from "react-icons/md";
+import { MdOutlineFlag, MdOutlineProductionQuantityLimits } from "react-icons/md";
 import { RiCoupon3Line } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
 import { TbBrandBootstrap } from "react-icons/tb";
@@ -89,6 +89,13 @@ export const navMenu = [
     ],
   },
   {
+    id: 9,
+    title: "Banner Setup",
+    icon: MdOutlineFlag,
+    path: "/banner",
+    role: "admin",
+  },
+  {
     id: 6,
     title: "Coupon",
     icon: RiCoupon3Line,
@@ -100,8 +107,7 @@ export const navMenu = [
     title: "Customer",
     icon: FiUser,
     path: "/customer",
- 
-  },
+   },
   {
     id: 8,
     title: "User",

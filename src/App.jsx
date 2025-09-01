@@ -19,6 +19,7 @@ import CreateProduct from "./pages/product/CreateProduct";
 import Product from "./pages/product/Product";
 import UpdateProduct from "./pages/product/UpdateProduct";
 import User from "./pages/User/User";
+import Banner from "./pages/Banner/Banner";
 
 function App() {
   return (
@@ -48,6 +49,8 @@ function App() {
           <Route path="coupon" element={<Coupon />} />
           <Route path="customer" element={<Customer />} />
           <Route path="user" element={<User />} />
+          // banner
+          <Route path="banner" element={<Banner />} />
         </Route>
 
         {/* Public routes without protection */}

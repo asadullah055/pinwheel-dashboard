@@ -18,6 +18,7 @@ import { productApi } from "../features/product/productApi";
 // 👇 Redux slices
 import { apiSlice } from "../features/api/apiSlice";
 import authReducer from "../features/auth/authSlice";
+import bannerReducer from "../features/banner/bannerSlice";
 import brandReducer from "../features/Brand/brandslice";
 import categoryReducer from "../features/category/categorySlice";
 import productReducer from "../features/product/productSlice";
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   product: productReducer,
   brand: brandReducer,
   category: categoryReducer,
+  banner: bannerReducer,
   [authApi.reducerPath]: authApi.reducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });

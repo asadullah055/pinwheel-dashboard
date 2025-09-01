@@ -120,6 +120,18 @@ layer(base);
   animation-delay: -0.5s;
 }
 
+/* Chrome, Safari, Edge etc. */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 @keyframes scale {
   0%,
   40%,
