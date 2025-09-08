@@ -10,7 +10,7 @@ const BannerTable = () => {
     const { data, isLoading, isError, error } = useGetAllBannersQuery({
         page: 1,
         limit: 10,
-        bannerType: "main",
+        bannerType: "",
     });
 
 
