@@ -40,7 +40,7 @@ export default function BannerForm() {
     }
 
     // Debug: সঠিকভাবে FormData contents দেখার জন্য
-    console.log("FormData contents:");
+
     for (let [key, value] of formData.entries()) {
       if (value instanceof File) {
         console.log(key, "File:", value.name, value.type, value.size);
@@ -106,17 +106,21 @@ export default function BannerForm() {
               name="startDate"
               control={control}
               rules={{ required: "Please select a start date" }}
-              render={({ field }) => (
-                <DatePicker
-                  {...field}
-                  selected={field.value}
-                  showTimeSelect
-                  placeholderText="Select start date"
-                  onChange={(date) => field.onChange(date)}
-                  className="w-full border rounded-md px-3 py-2"
-                  dateFormat="dd, MMM, yyyy h:mm aa"
-                />
-              )}
+              render={({ field }) => {
+                const now = new Date();
+                return (
+                  <DatePicker
+                    {...field}
+                    selected={field.value}
+                    showTimeSelect
+                    placeholderText="Select start date"
+                    onChange={(date) => field.onChange(date)}
+                    className="w-full border rounded-md px-3 py-2"
+                    dateFormat="dd, MMM, yyyy h:mm aa"
+                    minDate={now} 
+                  />
+                );
+              }}
             />
           </Field>
 

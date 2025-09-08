@@ -76,11 +76,10 @@ const Pagination = ({
           <li
             key={`${number}-${index}`}
             onClick={() => typeof number === "number" && onPageChange(number)}
-            className={`rounded py-1.5 px-3 cursor-pointer font-medium hover:bg-blue-500 hover:text-white ${
-              number === currentPage
+            className={`rounded py-1.5 px-3 cursor-pointer font-medium hover:bg-blue-500 hover:text-white ${number === currentPage
                 ? "bg-blue-500 text-white"
                 : "bg-white text-gray-500"
-            } ${number === "..." ? "pointer-events-none" : ""}`}
+              } ${number === "..." ? "pointer-events-none" : ""}`}
           >
             {number}
           </li>
