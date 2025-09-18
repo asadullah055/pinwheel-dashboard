@@ -26,12 +26,13 @@ const Sidebar = ({ show }) => {
 
   return (
     <aside
-      className={`h-screen absolute z-99 left-0 top-0 bg-[#1C2434] md:static text-white w-64 md:translate-x-0 transition-all duration-300 ${
-        show ? "-translate-x-0" : "-translate-x-full"
-      } flex flex-col `}
+      className={`h-screen absolute z-99 left-0 top-0 bg-[#1C2434] md:static text-white w-64 md:translate-x-0 transition-all duration-300 ${show ? "-translate-x-0" : "-translate-x-full"
+        } flex flex-col `}
     >
       <div className="text-2xl font-bold p-4 rounded-sm">
-        <img className="rounded-sm" src="/image/logo.png" alt="Logo" />
+        <Link to="/">
+          <img className="rounded-sm bg-white" src="/image/logo.png" alt="Logo" />
+        </Link>
       </div>
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
         <nav className="flex-1 px-4">
@@ -44,11 +45,10 @@ const Sidebar = ({ show }) => {
               return (
                 <li key={nav.id} className="mb-2 flex flex-col">
                   <div
-                    className={`flex items-center justify-between cursor-pointer rounded px-[8px] py-[10px] hover:bg-gray-700 text-[#dee4ee] transition-all duration-150 ${
-                      location.pathname === nav.path || activeParent
-                        ? "bg-gray-700 text-white"
-                        : ""
-                    }`}
+                    className={`flex items-center justify-between cursor-pointer rounded px-[8px] py-[10px] hover:bg-gray-700 text-[#dee4ee] transition-all duration-150 ${location.pathname === nav.path || activeParent
+                      ? "bg-gray-700 text-white"
+                      : ""
+                      }`}
                     onClick={() => toggleMenu(nav.id)}
                   >
                     <Link className="text-[14px] w-full" to={nav.path}>
@@ -58,28 +58,25 @@ const Sidebar = ({ show }) => {
                     </Link>
                     {nav.child && (
                       <IoIosArrowDown
-                        className={`transition-all duration-300 ${
-                          expandedMenu === nav.id ? "rotate-180 " : ""
-                        }`}
+                        className={`transition-all duration-300 ${expandedMenu === nav.id ? "rotate-180 " : ""
+                          }`}
                       />
                     )}
                   </div>
                   {nav.child && (
                     <ul
-                      className={`pl-4 overflow-hidden transition-all duration-300 ease-in-out ${
-                        expandedMenu === nav.id ? "max-h-52" : "max-h-0"
-                      }`}
+                      className={`pl-4 overflow-hidden transition-all duration-300 ease-in-out ${expandedMenu === nav.id ? "max-h-52" : "max-h-0"
+                        }`}
                     >
                       {nav.child.map((item) => {
                         return (
                           <li key={item.id} className="py-1 ml-3">
                             <Link
                               to={item.path}
-                              className={`font-semibold text-[14px] hover:text-white transition-all duration-300 ${
-                                location.pathname === item.path
-                                  ? "text-white "
-                                  : "text-[#8A99AF]"
-                              }`}
+                              className={`font-semibold text-[14px] hover:text-white transition-all duration-300 ${location.pathname === item.path
+                                ? "text-white "
+                                : "text-[#8A99AF]"
+                                }`}
                             >
                               <span className="flex items-center gap-2">
                                 <GoDotFill />
