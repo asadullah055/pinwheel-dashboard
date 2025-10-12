@@ -7,9 +7,8 @@ const ServiceWarranty = ({ errors, control }) => {
     return (
         <div className="border border-gray-300 rounded bg-white mt-4 pb-3">
             <p className="p-4 font-semibold text-gray-800 bg-gray-200">Service & Warranty
-
             </p>
-            <div className="px-4 font-semibold">
+            <div className="px-4">
                 <p>Warranty Info</p>
                 <div className="w-1/2 mt-2">
                     <FieldSet>
@@ -52,7 +51,7 @@ const ServiceWarranty = ({ errors, control }) => {
                     </FieldSet>
                 </div>
             </div>
-            <div className="px-4 font-semibold">
+            <div className="px-4">
                 <p>Package Info</p>
                 <div className="mt-2">
                     <FieldSet>

@@ -28,14 +28,7 @@ const CreateProduct = () => {
         control,
         formState: { errors },
     } = useForm({
-        defaultValues: {
-            defaultValues: {
-                productName: "",
-                category: "",
-                brand: "",
-                images: [],
-            }
-        },
+
     });
 
     const onSubmit = async (data) => {

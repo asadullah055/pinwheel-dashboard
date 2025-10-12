@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { buildProductFormData } from "../../../utils/formDataHelper";
 import BasicInfo from "../../components/Product/BasicInfo";
 import PriceStockVariants from "../../components/Product/PriceStockVariants";
+import ProductDescription from "../../components/Product/ProductDescription";
 import SEOMeatData from "../../components/Product/SEOMeatData";
 import ServiceWarranty from "../../components/Product/ServiceWarranty";
 import { useGetAllBrandsQuery } from "../../features/Brand/brandApi";
 import { useGetDropdownCategoriesQuery } from "../../features/category/categoryApi";
-import DescriptionSection from './../../components/Product/DescriptionSection';
+import { useCreateProductMutation } from "../../features/product/productApi";
+import toast from "react-hot-toast";
+import Loading from "../../components/Loading";
 const CreateProduct = () => {
   // 🔹 সব Variant ডাটা এখানে থাকবে
   const [attributes, setAttributes] = useState([]);
@@ -20,27 +24,51 @@ const CreateProduct = () => {
   const listCategories = categoryData?.categories || [];
   const listAllBrands = brandData?.brands || [];
   const { control, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: {
-      productName: "",
-      category: "",
-      brand: "",
-      images: [],
-    },
+
   });
-
+  const [createProduct, { isLoading }] = useCreateProductMutation();
   const onSubmit = async (data) => {
-    const payload = {
-      ...data,
-      description,
-      shortDescription,
-      attributes,
-      variantData,
-      applyAll,
-      availability,
-    };
+    // Variants handle
+    const variants = Object.entries(variantData).map(([key, variant]) => {
+      if (key === "single") {
+        return {
+          sku: variant.sku || "",
+          price: variant.price || "",
+          discountPrice: variant.discountPrice || "",
+          stock: variant.stock || "",
+          availability: variant.availability !== false,
+        };
+      } else {
+        const attributeValues = key.split("|");
+        const variantObj = {
+          sku: variant.sku || "",
+          price: variant.price || "",
+          discountPrice: variant.discountPrice || "",
+          stock: variant.stock || "",
+          availability: variant.availability !== false,
+        };
 
-    console.log("✅ Final Payload:", payload);
-    // এখন সবকিছু console-এ দেখা যাবে 🎉
+        // add attribute values dynamically
+        attributes.forEach((attr, index) => {
+          if (attributeValues[index]) {
+            variantObj[attr.name.toLowerCase()] = attributeValues[index];
+          }
+        });
+
+        return variantObj;
+      }
+    });
+
+    const formData = buildProductFormData(data, attributes, variants);
+
+    try {
+      const res = await createProduct(formData).unwrap();
+      toast.success(res?.message || "Product created successfully");
+
+    } catch (err) {
+      toast.error(err?.data?.message || "Something went wrong");
+    }
+
   };
 
   return (
@@ -50,12 +78,16 @@ const CreateProduct = () => {
       </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <BasicInfo control={control} errors={errors} listCategories={listCategories} listAllBrands={listAllBrands} />
-        <DescriptionSection
+
+        <ProductDescription
+          control={control}
+          errors={errors}
           description={description}
-          setDescription={setDescription}
           shortDescription={shortDescription}
+          setDescription={setDescription}
           setShortDescription={setShortDescription}
         />
+
         <PriceStockVariants
           attributes={attributes}
           setAttributes={setAttributes}
@@ -68,7 +100,12 @@ const CreateProduct = () => {
         />
         <ServiceWarranty control={control} errors={errors} />
         <SEOMeatData control={control} errors={errors} />
-        <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded">Create Product</button>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="bg-blue-600 text-white px-6 py-2 rounded">
+          {isLoading ? <Loading text={"Submitting...."} /> : "Submit"}
+        </button>
       </form>
     </div>
   );

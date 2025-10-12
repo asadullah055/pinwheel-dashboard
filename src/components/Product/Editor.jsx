@@ -1,7 +1,7 @@
 import JoditEditor from "jodit-react";
-import React, { useRef } from "react";
+import { useRef } from "react";
 
-const Editor = ({ description, setDescription }) => {
+const Editor = ({ description, setDescription, id }) => {
   const editor = useRef(null);
 
   const config = {
@@ -38,6 +38,7 @@ const Editor = ({ description, setDescription }) => {
   return (
     <JoditEditor
       ref={editor}
+      id={id}
       value={description}
       config={config}
       tabIndex={1}
@@ -46,4 +47,4 @@ const Editor = ({ description, setDescription }) => {
   );
 };
 
-export default React.memo(Editor);
+export default Editor;

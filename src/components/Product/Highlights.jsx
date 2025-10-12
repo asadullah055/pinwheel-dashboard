@@ -1,7 +1,7 @@
 import JoditEditor from "jodit-react";
-import React, { useRef } from "react";
+import { useRef } from "react";
 
-const Highlights = ({ setShortDescription, shortDescription }) => {
+const Highlights = ({ setShortDescription, shortDescription, id }) => {
   const editor2 = useRef(null);
 
   const config = {
@@ -18,6 +18,7 @@ const Highlights = ({ setShortDescription, shortDescription }) => {
   return (
     <JoditEditor
       ref={editor2}
+      id={id}
       value={shortDescription || ""}
       config={config}
       tabIndex={1}
@@ -26,4 +27,4 @@ const Highlights = ({ setShortDescription, shortDescription }) => {
   );
 };
 
-export default React.memo(Highlights);
+export default Highlights;
