@@ -14,9 +14,7 @@ const Product = () => {
           <p className="text-sm text-gray-500">Manage your products</p>
         </div>
       </div>
-
-      {/* Product Table */}
-      <div className="bg-white p-2 rounded-md">
+      <div className="bg-white rounded-md">
         <div className="overflow-x-auto">
           <ProductList
             currentPage={currentPage}
