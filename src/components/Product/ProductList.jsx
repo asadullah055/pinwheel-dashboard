@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import PriceModal from "./PriceModal";
 import StockModal from "./StockModal";
 // ✅ RTK QUERY HOOK
+import { BiSolidEditAlt } from "react-icons/bi";
 import { getPriceRange } from "../../../utils/getPriceRange";
 import {
   useGetAllProductsQuery,
@@ -100,9 +101,83 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
                 </div>
               </td>
               <td className="py-3 px-4">
-                ৳{product.discountPrice || product.regularPrice}
+                {product.variants?.length > 1 ? (
+                  (() => {
+                    const range = getPriceRange(product);
+
+                    return (
+                      <div className="flex items-center gap-1">
+                        <p>৳ {range.min} - {range.max}</p>
+                        <button
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setIsOpenModal(true);
+                          }} >
+                          <BiSolidEditAlt size={20} />
+                        </button>
+                      </div>
+                    );
+                  })()
+                ) : (
+                  // No variants → show single product price UI
+                  <div className="flex items-center gap-2">
+                    <div className="flex flex-col leading-tight">
+                      {product.variants?.[0]?.discountPrice ? (
+                        <>
+                          {/* Discount price */}
+                          <span className="">
+                            ৳ {product.variants[0].discountPrice}
+                          </span>
+
+                          {/* Regular price (strikethrough) */}
+                          <span className="text-gray-400 line-through text-[13px]">
+                            ৳ {product.variants[0].price}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="font-semibold text-[16px] text-gray-800">
+                          ৳ {product.variants[0].price}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Edit Button */}
+                    <button
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setIsOpenModal(true);
+                      }}
+
+                    >
+                      <BiSolidEditAlt size={20} />
+                    </button>
+                  </div>
+
+                )}
               </td>
-              <td className="py-3 px-4">{product.stock}</td>
+
+              <td className="py-3 px-4">
+                <div className="flex gap-1 items-center">
+                  <p>
+                    {(() => {
+                      const totalStock = product?.variants?.reduce((sum, v) => sum + (v.stock || 0), 0);
+
+                      return totalStock === 0 ? (
+                        <span className="text-red-500 font-semibold">Sold Out</span>
+                      ) : (
+                        <span>{totalStock}</span>
+                      );
+                    })()}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSelectedProduct(product);
+                      setIsStockModal(true);
+                    }} >
+                    <BiSolidEditAlt size={20} />
+                  </button>
+                </div>
+              </td>
               <td className="py-3 px-4">{product.sales ?? 0}</td>
               <td className="py-3 px-4">
                 <input
@@ -118,7 +193,7 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
             </tr>
 
             {/* Variants rows */}
-            {product.variants?.map((variant) => (
+            {product.variants.length > 1 && product.variants?.map((variant) => (
               <>
                 <tr
                   key={variant._id}
@@ -130,7 +205,7 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
                     <img src={product?.images[0]} className="w-10 h-10 rounded object-cover" />
 
                     <div>
-                      <p className="text-gray-800 font-medium">{variant.name}</p>
+                      <p className="text-gray-800 font-medium">{Object.values(variant.attributes).join(" ")} </p>
                       <p className="text-xs text-gray-500 mt-1">
                         Seller Sku: {variant.sku}
                       </p>
@@ -138,12 +213,27 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
                   </td>
                   {/* <td className="py-2 px-4 pl-16">{variant.name}</td> */}
                   <td className="py-2 px-4">
-                    ৳{variant.discountPrice}{" "}
-                    <span className="text-gray-400 line-through text-xs">
-                      ৳{variant.price}
-                    </span>
+                    <div className="flex flex-col">
+                      {variant.discountPrice ? (
+                        <>
+                          <span>৳ {variant.discountPrice}</span>
+                          <span className="text-gray-400 line-through text-sm">
+                            ৳ {variant.price}
+                          </span>
+                        </>
+                      ) : (
+                        <span>৳ {variant.price}</span>
+                      )}
+                    </div>
                   </td>
-                  <td className="py-2 px-4">{variant.stock}</td>
+                  <td className="py-2 px-4">
+                    {variant.stock === 0 ? (
+                      <span className="text-red-500 font-semibold">Sold Out</span>
+                    ) : (
+                      variant.stock
+                    )}
+                  </td>
+
                   <td className="py-2 px-4"></td>
                   <td className="py-2 px-4">
                     <input
@@ -152,7 +242,7 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
                       className="toggle toggle-success"
                     />
                   </td>
-                  <td className="py-2 px-4 text-blue-700">Edit</td>
+                  <td className="py-2 px-4 text-blue-700"></td>
                 </tr>
 
               </>
@@ -228,7 +318,7 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
           closeStockModal={closeStockModal}
         />
       )}
-      {/* <ProductTable /> */}
+
     </div>
   );
 };

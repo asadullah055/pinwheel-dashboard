@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { buildProductFormData } from "../../../utils/formDataHelper";
+import Loading from "../../components/Loading";
 import BasicInfo from "../../components/Product/BasicInfo";
 import PriceStockVariants from "../../components/Product/PriceStockVariants";
 import ProductDescription from "../../components/Product/ProductDescription";
@@ -9,8 +11,6 @@ import ServiceWarranty from "../../components/Product/ServiceWarranty";
 import { useGetAllBrandsQuery } from "../../features/Brand/brandApi";
 import { useGetDropdownCategoriesQuery } from "../../features/category/categoryApi";
 import { useCreateProductMutation } from "../../features/product/productApi";
-import toast from "react-hot-toast";
-import Loading from "../../components/Loading";
 const CreateProduct = () => {
   // 🔹 সব Variant ডাটা এখানে থাকবে
   const [attributes, setAttributes] = useState([]);
@@ -51,7 +51,7 @@ const CreateProduct = () => {
         // add attribute values dynamically
         attributes.forEach((attr, index) => {
           if (attributeValues[index]) {
-            variantObj[attr.name.toLowerCase()] = attributeValues[index];
+            variantObj[attr.name] = attributeValues[index];
           }
         });
 

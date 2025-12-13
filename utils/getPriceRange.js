@@ -17,7 +17,7 @@
     };
 } */
 
-    export function getPriceRange(product) {
+ /*    export function getPriceRange(product) {
   // If product has variants
   if (product?.variants && product?.variants.length > 0) {
     const prices = product?.variants.map(v => {
@@ -41,5 +41,19 @@
     minPrice: discount ?? regular,
     maxPrice: regular
   };
-}
+} */
 
+export const getPriceRange = (product) => {
+  if (!product?.variants || product.variants.length === 0) {
+    return null;
+  }
+
+  const prices = product.variants.map((v) =>
+    v.discountPrice ? v.discountPrice : v.price
+  );
+
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+
+  return { min, max };
+};
