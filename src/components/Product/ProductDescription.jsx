@@ -2,7 +2,8 @@ import { Controller } from "react-hook-form";
 import Editor from "./Editor";
 import Highlights from "./Highlights";
 
-const ProductDescription = ({ control, errors, setDescription, setShortDescription }) => {
+const ProductDescription = ({ control, errors, description, setDescription, setShortDescription }) => {
+    // console.log(description)
     return (
         <div className="border border-gray-300 rounded bg-white mt-4">
             <p className="p-4 font-semibold text-gray-800 bg-gray-200">Product Description</p>

@@ -4,7 +4,7 @@ import VariantAttributeForm from './VariantAttributeForm';
 import { validatePrice } from './variantHelpers';
 import VariantTable from './VariantTable';
 
-export default function ProductVariant({ attributes, setAttributes, variantData, setVariantData, applyAll, setApplyAll, availability, setAvailability }) {
+export default function ProductVariant({ attributes, setAttributes, variantData, setVariantData, applyAll, setApplyAll }) {
   // 🚀 এখন state parent থেকে আসছে, তাই এখানকার লোকাল useState দরকার নেই
 
   const addAttribute = () => {
@@ -44,35 +44,40 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
 
 
   const handleApplyAll = () => {
-    if (rows.length === 0) {
-      setVariantData({
-        single: {
-          price: applyAll.price,
-          discountPrice: applyAll.discountPrice,
-          stock: applyAll.stock,
-          sku: applyAll.sku,
-          availability: true
-        },
-      });
-    } else {
-      const newData = {};
+    setVariantData(prev => {
+      if (rows.length === 0) {
+        return {
+          single: {
+            price: applyAll.price !== "" ? applyAll.price : prev.single?.price || "",
+            discountPrice:
+              applyAll.discountPrice !== "" ? applyAll.discountPrice : prev.single?.discountPrice || "",
+            stock: applyAll.stock !== "" ? applyAll.stock : prev.single?.stock || "",
+            sku: applyAll.sku !== "" ? applyAll.sku : prev.single?.sku || "",
+            availability: prev.single?.availability ?? true
+          }
+        };
+      }
+
+      const updated = {};
       rows.forEach((row) => {
         const key = row.join("|");
         let sku = applyAll.sku;
-        if (sku) {
-          sku += "-" + row.join("-");
-        }
-        newData[key] = {
-          price: applyAll.price,
-          discountPrice: applyAll.discountPrice,
-          stock: applyAll.stock,
-          sku: sku,
-          availability: true
+        if (sku) sku += "-" + row.join("-");
+
+        updated[key] = {
+          price: applyAll.price !== "" ? applyAll.price : prev[key]?.price || "",
+          discountPrice:
+            applyAll.discountPrice !== "" ? applyAll.discountPrice : prev[key]?.discountPrice || "",
+          stock: applyAll.stock !== "" ? applyAll.stock : prev[key]?.stock || "",
+          sku: applyAll.sku !== "" ? sku : prev[key]?.sku || "",
+          availability: prev[key]?.availability ?? true
         };
       });
-      setVariantData(newData);
-    }
+
+      return updated;
+    });
   };
+
   const toggleAvailability = (key) => {
     setVariantData(prev => {
       const newData = { ...prev };

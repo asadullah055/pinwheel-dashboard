@@ -2,6 +2,8 @@ import SingleProductRow from "./SingleProductRow";
 import VariantRow from "./VariantRow";
 
 const VariantTable = ({ attributes, rows, variantData, handleChange, validatePrice, setVariantData, toggleAvailability }) => {
+
+
     return (
         <div className="px-4"><div className="rounded-lg overflow-hidden border border-gray-300 ">
             <table className="w-full text-sm">

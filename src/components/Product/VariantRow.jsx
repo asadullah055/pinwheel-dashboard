@@ -3,6 +3,7 @@
 const VariantRow = ({ row, rowIdx, rows, attributes, variantData, handleChange, validatePrice, toggleAvailability }) => {
     const key = row.join("|");
     const availability = variantData[key]?.availability !== false;
+
     return (
         <tr>
             {attributes.map((attr, colIdx) => {
