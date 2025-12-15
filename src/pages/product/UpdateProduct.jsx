@@ -162,7 +162,8 @@ export default function UpdateProduct() {
           availability: variant.availability !== false,
         };
       } else {
-        const attributeValues = key.split("|");
+        // Split the lowercase key
+        const lowercaseValues = key.split("|"); // ["6600 mah", "with adapter"]
 
         const variantObj = {
           sku: variant.sku,
@@ -172,16 +173,25 @@ export default function UpdateProduct() {
           availability: variant.availability !== false,
         };
 
+        // 🔥 FIX: Map lowercase values back to original case from attributes
         attributes.forEach((attr, index) => {
-          if (attributeValues[index]) {
-            variantObj[attr.name] = attributeValues[index];
+          if (lowercaseValues[index]) {
+            // Find the original case value from attribute.values
+            const originalValue = attr.values.find(
+              val => val.toLowerCase() === lowercaseValues[index]
+            );
+
+            // Use original case value for database
+            variantObj[attr.name] = originalValue || lowercaseValues[index];
           }
         });
 
         return variantObj;
       }
     });
-    console.log(variants);
+
+    console.log("🚀 Variants to be sent to database:", variants);
+
     const formData = buildProductFormData(
       data,
       attributes,
@@ -189,12 +199,9 @@ export default function UpdateProduct() {
       description,
       shortDescription
     );
-
     formData.append("productId", productId);
 
     try {
-
-
       const res = await updateProduct({ id: productId, data: formData }).unwrap();
       toast.success(res?.message || "Product updated successfully");
     } catch (err) {

@@ -28,7 +28,6 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
 
   const rows = attributes.every(a => a.values.length === 0) ? [] : getGroupedRows(attributes);
   const totalVariants = rows.length || 1;
-
   const handleChange = (key, field, value) => {
     setVariantData(prev => ({
       ...prev,
@@ -59,7 +58,9 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
 
       const updated = {};
       rows.forEach((row) => {
-        const key = row.join("|");
+      
+        const key = row.map(val => val.toLowerCase()).join("|");
+
         let sku = applyAll.sku;
         if (sku) sku += "-" + row.join("-");
 
@@ -73,6 +74,7 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
         };
       });
 
+      console.log("✅ Updated variantData after Apply All:", updated);
       return updated;
     });
   };
@@ -80,17 +82,19 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
 
 
   const toggleAvailability = (key) => {
+    // Key already comes normalized from VariantRow component
     setVariantData(prev => {
-      const currentVariant = prev[key] || {};
-      const isCurrentlyAvailable = currentVariant.availability !== false;
-
-      return {
-        ...prev,
-        [key]: {
-          ...currentVariant,
-          availability: !isCurrentlyAvailable
-        }
+      const newData = { ...prev };
+      if (!newData[key]) {
+        newData[key] = {};
+      }
+      // Explicitly set true/false
+      const currentAvailability = newData[key].availability;
+      newData[key] = {
+        ...newData[key],
+        availability: currentAvailability === false ? true : false
       };
+      return newData;
     });
   };
   return (

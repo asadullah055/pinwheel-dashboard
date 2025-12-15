@@ -89,6 +89,7 @@ const VariantRow = ({
 
       {/* Shop SKU */}
       <td className="border border-gray-300 p-2">
+        
         <input
           type="text"
           className="w-full px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"

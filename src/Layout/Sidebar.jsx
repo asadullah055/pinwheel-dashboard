@@ -15,7 +15,7 @@ const Sidebar = ({ show }) => {
   // Get user and role from Redux state
   const user = useSelector((state) => state.auth.user);
   const userRole = user?.role;
-
+  console.log(user)
   // Filter nav items by role: show all for admin, else omit items with role 'admin'
   const filteredMenu = navMenu.filter((nav) => {
     // if nav has no role restriction, always include
