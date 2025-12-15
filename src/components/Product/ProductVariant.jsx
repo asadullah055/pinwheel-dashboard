@@ -6,7 +6,6 @@ import VariantTable from './VariantTable';
 
 export default function ProductVariant({ attributes, setAttributes, variantData, setVariantData, applyAll, setApplyAll }) {
   // 🚀 এখন state parent থেকে আসছে, তাই এখানকার লোকাল useState দরকার নেই
-
   const addAttribute = () => {
     if (attributes.length < 3) setAttributes([...attributes, { name: "", values: [] }]);
   };
@@ -78,19 +77,20 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
     });
   };
 
+
+
   const toggleAvailability = (key) => {
     setVariantData(prev => {
-      const newData = { ...prev };
-      if (!newData[key]) {
-        newData[key] = {};
-      }
-      // Explicitly set true/false
-      const currentAvailability = newData[key].availability;
-      newData[key] = {
-        ...newData[key],
-        availability: currentAvailability === false ? true : false
+      const currentVariant = prev[key] || {};
+      const isCurrentlyAvailable = currentVariant.availability !== false;
+
+      return {
+        ...prev,
+        [key]: {
+          ...currentVariant,
+          availability: !isCurrentlyAvailable
+        }
       };
-      return newData;
     });
   };
   return (

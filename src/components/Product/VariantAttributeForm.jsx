@@ -60,7 +60,7 @@ const VariantAttributeForm = ({ attributes, addAttribute, removeAttribute, updat
                     </div>
                     <div className="flex flex-wrap gap-2">
                         {attr.values.map((val, vIdx) => (
-                            <span key={vIdx} className="bg-blue-50 border border-blue-200 text-blue-700 px-2 rounded-full flex items-center text-sm capitalize transition">
+                            <span key={vIdx} className="bg-blue-50 border border-blue-200 text-blue-700 px-2 rounded-full flex items-center text-sm  transition">
                                 {val}
                                 <button
                                     type="button"

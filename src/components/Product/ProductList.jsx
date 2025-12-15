@@ -26,14 +26,11 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
 
   const products = data?.products || [];
   const totalProducts = data?.totalProducts || 0;
-  console.log("Products:", products);
+  // console.log("Products:", products);
   const closeModal = () => {
     setIsOpenModal(false);
     setSelectedProduct(null);
   };
-  const priceRange = getPriceRange(products[3]);
-  console.log("priceRange", priceRange);
-
 
   const closeStockModal = () => {
     setIsStockModal(false);

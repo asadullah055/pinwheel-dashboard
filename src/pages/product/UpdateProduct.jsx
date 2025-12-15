@@ -25,7 +25,6 @@ export default function UpdateProduct() {
   const { id } = useParams();
   const productId = id;
 
-
   const [attributes, setAttributes] = useState([]);
   const [variantData, setVariantData] = useState({});
   const [applyAll, setApplyAll] = useState({
@@ -45,10 +44,12 @@ export default function UpdateProduct() {
     useGetSingleProductQuery(productId);
 
 
+
   const listCategories = categoryData?.categories || [];
   const listAllBrands = brandData?.brands || [];
 
   const [updateProduct, { isLoading: updating }] = useUpdateProductMutation();
+
 
   // React Hook Form
   const {
@@ -58,6 +59,11 @@ export default function UpdateProduct() {
     formState: { errors },
   } = useForm({});
 
+  // 🔹 WHEN PRODUCT DATA ARRIVES → PREFILL FORM + STATE
+  // 🔹 WHEN PRODUCT DATA ARRIVES → PREFILL FORM + STATE
+  // 🔹 WHEN PRODUCT DATA ARRIVES → PREFILL FORM + STATE
+  // 🔹 WHEN PRODUCT DATA ARRIVES → PREFILL FORM + STATE
+  // 🔹 WHEN PRODUCT DATA ARRIVES → PREFILL FORM + STATE
   // 🔹 WHEN PRODUCT DATA ARRIVES → PREFILL FORM + STATE
   useEffect(() => {
     if (!singleProductData?.product) return;
@@ -81,32 +87,52 @@ export default function UpdateProduct() {
       length: p.length,
       width: p.width,
       height: p.height,
-      description: p.description,           // ⭐ ADD THIS
+      description: p.description,
       shortDescription: p.shortDescription,
       images: p.images,
-      // variants: p.variants                     // Clear images input
     });
-    // console.log(p.variants)
+
     // Description
     setDescription(p.description || "");
     setShortDescription(p.shortDescription || "");
-    setAttributes(p.attributes || []);
+
+
+
+    const normalizedAttributes = (p.attributes || []).map(attr => {
+
+      return {
+        ...attr,
+        values: attr.values, // Keep original case for display
+        normalizedValues: attr.values.map(val => val.toLowerCase()) // Lowercase for keys
+      };
+    });
+
+    setAttributes(normalizedAttributes);
 
     const productAttrs = p.attributes || [];
     const tempVariantData = {};
 
-    // const productAttrs = p.attributes || [];
-    // const tempVariantData = {};
 
-
-    p.variants.forEach((v) => {
+    p.variants.forEach((v, index) => {
       let key = "single";
 
       if (productAttrs.length > 0) {
         key = productAttrs
           .map(attr => {
-            const name = attr.name.toLowerCase();  // normalize
-            return v.attributes[name] || "";
+            // 🔥 FIX: Variant এ attributes object আছে যেখানে keys lowercase
+            let attrValue = "";
+
+            if (v.attributes) {
+              // Try lowercase version of attribute name
+              const lowercaseAttrName = attr.name.toLowerCase();
+              attrValue = v.attributes[lowercaseAttrName] || v.attributes[attr.name] || "";
+            } else {
+              // Fallback: try direct property
+              attrValue = v[attr.name] || v[attr.name.toLowerCase()] || "";
+            }
+
+            // Normalize the value to lowercase for consistent key generation
+            return (attrValue || "").toLowerCase();
           })
           .join("|");
       }
@@ -116,13 +142,13 @@ export default function UpdateProduct() {
         price: v.price,
         discountPrice: v.discountPrice,
         stock: v.stock,
-        availability: v.availability
+        availability: v.availability !== false
       };
     });
 
     setVariantData(tempVariantData);
-
   }, [singleProductData]);
+
 
   // SUBMIT HANDLER
   const onSubmit = async (data) => {
@@ -155,7 +181,7 @@ export default function UpdateProduct() {
         return variantObj;
       }
     });
-
+    console.log(variants);
     const formData = buildProductFormData(
       data,
       attributes,
@@ -169,7 +195,7 @@ export default function UpdateProduct() {
     try {
 
 
-      const res = await updateProduct(formData).unwrap();
+      const res = await updateProduct({ id: productId, data: formData }).unwrap();
       toast.success(res?.message || "Product updated successfully");
     } catch (err) {
       toast.error(err?.data?.message || "Something went wrong");
@@ -181,7 +207,7 @@ export default function UpdateProduct() {
   return (
     <div className="w-full lg:w-3/4 ms-4 p-6 rounded-lg">
       <h2 className="text-xl lg:text-4xl font-semibold text-[#111] mb-4">
-        Update Product {singleProductData?.product?.productName}
+        Update Product
       </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
