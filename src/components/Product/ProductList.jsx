@@ -8,6 +8,7 @@ import { BiSolidEditAlt } from "react-icons/bi";
 import { getPriceRange } from "../../../utils/getPriceRange";
 import {
   useGetAllProductsQuery,
+  useUpdatePriceAndStockMutation,
   useUpdateStatusMutation,
 } from "../../features/product/productApi";
 import Loader from "../Loader";
@@ -22,11 +23,14 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
     page: currentPage,
     limit: perPage,
   });
-  const [updateStatus] = useUpdateStatusMutation();
 
+
+  const [updateStatus] = useUpdateStatusMutation();
+  const [updatePriceAndStock] = useUpdatePriceAndStockMutation();
   const products = data?.products || [];
   const totalProducts = data?.totalProducts || 0;
-  // console.log("Products:", products);
+
+
   const closeModal = () => {
     setIsOpenModal(false);
     setSelectedProduct(null);
@@ -52,6 +56,24 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
       toast.error(error?.data?.message || "Failed to update status");
     }
   };
+  const toggleVariantAvailability = async (productId, variant) => {
+    try {
+      await updatePriceAndStock({
+        id: productId,
+        variants: [
+          {
+            _id: variant._id,
+            availability: !variant.availability, // ✅ toggle here
+          },
+        ],
+      }).unwrap();
+
+      toast.success("Product availability updated");
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to update availability");
+    }
+  };
+
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -181,6 +203,7 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
                   type="checkbox"
                   checked={product.status === "published"}
                   onChange={() => toggleStatus(product._id)}
+
                   className="toggle toggle-info"
                 />
               </td>
@@ -235,7 +258,10 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
                   <td className="py-2 px-4">
                     <input
                       type="checkbox"
-                      checked={variant.status === "published"}
+                      checked={variant.availability}
+                      onChange={() =>
+                        toggleVariantAvailability(product._id, variant)
+                      }
                       className="toggle toggle-success"
                     />
                   </td>

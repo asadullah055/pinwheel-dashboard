@@ -39,7 +39,7 @@ const CreateProduct = () => {
           availability: variant.availability !== false,
         };
       } else {
-        const attributeValues = key.split("|");
+        const attributeValues = variant._originalValues || key.split("|");
         const variantObj = {
           sku: variant.sku || "",
           price: variant.price || "",
@@ -58,6 +58,7 @@ const CreateProduct = () => {
         return variantObj;
       }
     });
+
 
     const formData = buildProductFormData(data, attributes, variants);
 

@@ -1,16 +1,17 @@
-const VariantRow = ({ 
-  row, 
-  rowIdx, 
-  rows, 
-  attributes, 
-  variantData, 
-  handleChange, 
-  validatePrice, 
-  toggleAvailability 
+const VariantRow = ({
+  row,
+  rowIdx,
+  rows,
+  attributes,
+  variantData,
+  handleChange,
+  validatePrice,
+  toggleAvailability
 }) => {
   // 🔥 FIX: Normalize the key to lowercase to match variantData keys
   const key = row.map(val => val.toLowerCase()).join("|");
-  
+
+
   const availability = variantData[key]?.availability !== false;
 
   return (
@@ -52,11 +53,10 @@ const VariantRow = ({
           <span className="text-gray-600">৳</span>
           <input
             type="text"
-            className={`w-full px-2 py-1 border rounded-md focus:outline-none focus:ring ${
-              !validatePrice(variantData[key]?.price, variantData[key]?.discountPrice)
-                ? "border-red-500 focus:ring-red-300"
-                : "focus:ring-blue-300"
-            }`}
+            className={`w-full px-2 py-1 border rounded-md focus:outline-none focus:ring ${!validatePrice(variantData[key]?.price, variantData[key]?.discountPrice)
+              ? "border-red-500 focus:ring-red-300"
+              : "focus:ring-blue-300"
+              }`}
             value={variantData[key]?.price || ""}
             onChange={(e) => handleChange(key, "price", e.target.value)}
           />
@@ -67,11 +67,10 @@ const VariantRow = ({
       <td className="border border-gray-300 p-2">
         <input
           type="text"
-          className={`w-full px-2 py-1 border rounded-md focus:outline-none focus:ring ${
-            !validatePrice(variantData[key]?.price, variantData[key]?.discountPrice)
-              ? "border-red-500 focus:ring-red-300"
-              : "focus:ring-blue-300"
-          }`}
+          className={`w-full px-2 py-1 border rounded-md focus:outline-none focus:ring ${!validatePrice(variantData[key]?.price, variantData[key]?.discountPrice)
+            ? "border-red-500 focus:ring-red-300"
+            : "focus:ring-blue-300"
+            }`}
           value={variantData[key]?.discountPrice || ""}
           onChange={(e) => handleChange(key, "discountPrice", e.target.value)}
         />
@@ -89,7 +88,7 @@ const VariantRow = ({
 
       {/* Shop SKU */}
       <td className="border border-gray-300 p-2">
-        
+
         <input
           type="text"
           className="w-full px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
@@ -104,14 +103,12 @@ const VariantRow = ({
         <button
           type="button"
           onClick={() => toggleAvailability(key)}
-          className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
-            availability ? "bg-green-500" : "bg-gray-400"
-          }`}
+          className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${availability ? "bg-green-500" : "bg-gray-400"
+            }`}
         >
           <span
-            className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-300 ${
-              availability ? "translate-x-6" : "translate-x-0"
-            }`}
+            className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transform transition-transform duration-300 ${availability ? "translate-x-6" : "translate-x-0"
+              }`}
           />
         </button>
       </td>

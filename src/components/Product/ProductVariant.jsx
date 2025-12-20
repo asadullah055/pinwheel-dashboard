@@ -17,7 +17,7 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
     const trimmed = value.trim();
     setAttributes(
       attributes.map((a, i) =>
-        i === idx && !a.values.some(v => v.toLowerCase() === trimmed.toLowerCase())
+        i === idx && !a.values.some(v => v === trimmed)
           ? { ...a, values: [...a.values, trimmed] }
           : a
       )
@@ -35,7 +35,8 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
         ...prev[key],
         [field]: value,
         // Default availability true if not set
-        availability: prev[key]?.availability !== undefined ? prev[key].availability : true
+        availability: prev[key]?.availability !== undefined ? prev[key].availability : true,
+        _originalValue: prev[key]?._originalValue || {}
       },
     }));
   };
@@ -58,7 +59,7 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
 
       const updated = {};
       rows.forEach((row) => {
-      
+
         const key = row.map(val => val.toLowerCase()).join("|");
 
         let sku = applyAll.sku;
@@ -70,11 +71,11 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
             applyAll.discountPrice !== "" ? applyAll.discountPrice : prev[key]?.discountPrice || "",
           stock: applyAll.stock !== "" ? applyAll.stock : prev[key]?.stock || "",
           sku: applyAll.sku !== "" ? sku : prev[key]?.sku || "",
-          availability: prev[key]?.availability ?? true
+          availability: prev[key]?.availability ?? true,
+          _originalValues: row
         };
       });
 
-      console.log("✅ Updated variantData after Apply All:", updated);
       return updated;
     });
   };

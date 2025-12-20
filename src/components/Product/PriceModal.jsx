@@ -1,11 +1,13 @@
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { IoClose } from "react-icons/io5";
+import { useUpdatePriceAndStockMutation } from "../../features/product/productApi";
 
 export default function PriceModal({ product, closeModal }) {
   const hasVariants = product?.variants?.length > 1;
+  console.log(product);
 
-
+  const [updatePriceAndStock, { isLoading }] = useUpdatePriceAndStockMutation();
   // VARIANT STATE
   const [variantList, setVariantList] = useState(
     product?.variants?.map((v) => ({
@@ -68,7 +70,7 @@ export default function PriceModal({ product, closeModal }) {
 
 
   // SUBMIT HANDLER
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     for (let v of variantList) {
       if (v.price < 0 || isNaN(v.price)) {
         toast.error("Invalid Retail Price");
@@ -83,9 +85,22 @@ export default function PriceModal({ product, closeModal }) {
         return;
       }
     }
-    console.log("FINAL PRICE DATA:", variantList);
-    toast.success("Prices updated successfully!");
-    closeModal();
+    try {
+      const res = await updatePriceAndStock({
+        id: product._id,
+        variants: variantList.map((v) => ({
+          _id: v._id,
+          price: v.price,
+          discountPrice: v.discountPrice,
+        })),
+      }).unwrap();
+
+      toast.success("Prices updated successfully!");
+      closeModal();
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to update prices");
+    }
+
   };
 
 
@@ -122,8 +137,7 @@ export default function PriceModal({ product, closeModal }) {
               />
               <div>
                 <p className="font-semibold text-sm">
-                  {single.attributes?.["battery capacity"] ||
-                    product.productName ||
+                  {product.productName ||
                     "Single Product"}
                 </p>
                 <p className="text-xs text-gray-500">
@@ -286,7 +300,7 @@ export default function PriceModal({ product, closeModal }) {
                   <img src={product.images[0]} className="w-12 h-12 rounded" />
                   <div>
                     <p className="font-semibold text-sm">
-                      {v.attributes["battery capacity"] || v.name}
+                      {Object.values(v.attributes).join(" ")}
                     </p>
                     <p className="text-xs text-gray-500">SKU: {v.sku}</p>
                   </div>

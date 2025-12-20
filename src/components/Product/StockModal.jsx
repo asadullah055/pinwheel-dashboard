@@ -194,7 +194,7 @@ export default function StockModal({ product, closeStockModal }) {
                   <img src={product.images[0]} className="w-12 h-12 rounded" />
                   <div>
                     <p className="font-semibold text-sm">
-                      {v.name || v.attributes["battery capacity"]}
+                      {Object.values(v.attributes).join(" ")}
                     </p>
                     <p className="text-xs text-gray-500">SKU: {v.sku}</p>
                   </div>

@@ -163,7 +163,7 @@ export default function UpdateProduct() {
         };
       } else {
         // Split the lowercase key
-        const lowercaseValues = key.split("|"); // ["6600 mah", "with adapter"]
+        const lowercaseValues = key.split("|");
 
         const variantObj = {
           sku: variant.sku,
@@ -190,7 +190,6 @@ export default function UpdateProduct() {
       }
     });
 
-    console.log("🚀 Variants to be sent to database:", variants);
 
     const formData = buildProductFormData(
       data,
