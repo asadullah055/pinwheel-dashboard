@@ -3,11 +3,16 @@
 layer(base);
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark, cupcake;
+  themes: light --default, cupcake;
 }
 @theme {
   --font-raleway: Raleway, sans-serif;
   --font-inter: Inter, sans-serif;
+}
+
+html {
+  background: #ffffff;
+  color-scheme: light;
 }
 
 /*

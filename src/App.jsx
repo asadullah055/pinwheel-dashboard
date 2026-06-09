@@ -46,6 +46,7 @@ function App() {
           // order
           <Route path="order/create" element={<CreateOrder />} />
           <Route path="order/details" element={<OrderDetails />} />
+          <Route path="order/details/:id" element={<OrderDetails />} />
           <Route path="coupon" element={<Coupon />} />
           <Route path="customer" element={<Customer />} />
           <Route path="user" element={<User />} />
