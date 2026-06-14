@@ -1,11 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { clearCredentials } from "../auth/authSlice";
+import { getApiBaseUrl } from "../../utils/apiBaseUrl";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl:
-    process.env.NODE_ENV === "production"
-      ? "https://pinwheel-server.vercel.app/api"
-      : "http://localhost:8000/api",
+  baseUrl: getApiBaseUrl(),
   credentials: "include",
 });
 const baseQueryWithReauth = async (args, api, extraOptions) => {

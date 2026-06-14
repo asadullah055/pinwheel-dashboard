@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import Loader from "../../components/Loader";
 import { useGetOrderByIdQuery } from "../../features/order/orderApi";
+import { getApiBaseUrl } from "../../utils/apiBaseUrl";
 
 const formatDate = (value) => {
   if (!value) return "N/A";
@@ -35,6 +36,8 @@ const formatAttributes = (attributes) => {
     .map(([key, value]) => `${key}: ${value}`)
     .join(", ");
 };
+
+const getInvoiceUrl = (orderId) => `${getApiBaseUrl()}/order/${orderId}/invoice`;
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -87,9 +90,19 @@ const OrderDetails = () => {
           </h3>
           <p className="text-sm text-gray-500">{formatDate(order?.createdAt)}</p>
         </div>
-        <Link className="rounded bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600" to="/order/list">
-          Back
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <a
+            className="rounded bg-orange-50 px-4 py-2 text-sm font-medium text-orange-600"
+            href={getInvoiceUrl(order._id)}
+            rel="noreferrer"
+            target="_blank"
+          >
+            Invoice
+          </a>
+          <Link className="rounded bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600" to="/order/list">
+            Back
+          </Link>
+        </div>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">

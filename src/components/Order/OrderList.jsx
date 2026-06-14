@@ -6,6 +6,7 @@ import {
   useGetOrdersQuery,
   useUpdateOrderItemStatusMutation,
 } from "../../features/order/orderApi";
+import { getApiBaseUrl } from "../../utils/apiBaseUrl";
 import Loader from "../Loader";
 import Pagination from "../Pagination";
 
@@ -59,6 +60,8 @@ const getOrderStatusSummary = (order) => {
 
   return `${statuses.size} product statuses`;
 };
+
+const getInvoiceUrl = (orderId) => `${getApiBaseUrl()}/order/${orderId}/invoice`;
 
 const OrderList = () => {
   const [expandedOrderIds, setExpandedOrderIds] = useState({});
@@ -164,22 +167,32 @@ const OrderList = () => {
               </span>
             </td>
             <td className="px-4 py-3">
-              {items.length > 1 ? (
-                <button
-                  className="rounded bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600"
-                  type="button"
-                  onClick={() => toggleExpandedOrder(order._id)}
+              <div className="flex flex-wrap gap-2">
+                {items.length > 1 ? (
+                  <button
+                    className="rounded bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600"
+                    type="button"
+                    onClick={() => toggleExpandedOrder(order._id)}
+                  >
+                    {isExpanded ? "Hide" : "View"}
+                  </button>
+                ) : (
+                  <Link
+                    to={`/order/details/${order._id}?item=${items[0]?._id || ""}`}
+                    className="rounded bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600"
+                  >
+                    Details
+                  </Link>
+                )}
+                <a
+                  className="rounded bg-orange-50 px-3 py-1 text-sm font-medium text-orange-600"
+                  href={getInvoiceUrl(order._id)}
+                  rel="noreferrer"
+                  target="_blank"
                 >
-                  {isExpanded ? "Hide" : "View"}
-                </button>
-              ) : (
-                <Link
-                  to={`/order/details/${order._id}?item=${items[0]?._id || ""}`}
-                  className="rounded bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600"
-                >
-                  Details
-                </Link>
-              )}
+                  Invoice
+                </a>
+              </div>
             </td>
           </tr>
 
@@ -229,12 +242,22 @@ const OrderList = () => {
                           ))}
                         </select>
                         <div className="flex items-center justify-start md:justify-end">
-                          <Link
-                            to={`/order/details/${order._id}?item=${item._id}`}
-                            className="rounded bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600"
-                          >
-                            Details
-                          </Link>
+                          <div className="flex flex-wrap gap-2">
+                            <Link
+                              to={`/order/details/${order._id}?item=${item._id}`}
+                              className="rounded bg-blue-50 px-3 py-1 text-sm font-medium text-blue-600"
+                            >
+                              Details
+                            </Link>
+                            <a
+                              className="rounded bg-orange-50 px-3 py-1 text-sm font-medium text-orange-600"
+                              href={getInvoiceUrl(order._id)}
+                              rel="noreferrer"
+                              target="_blank"
+                            >
+                              Invoice
+                            </a>
+                          </div>
                         </div>
                       </div>
                     );
