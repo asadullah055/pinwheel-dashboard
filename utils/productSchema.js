@@ -25,17 +25,27 @@ export const productSchema = z.object({
     .refine((val) => !isNaN(val), {
       message: "Stock must be a number",
     }),
-  packageWeight: z.string().min(1, "Package weight is required"),
-  packageLength: z.string().min(1, "Package length is required"),
-  packageWidth: z.string().min(1, "Package width is required"),
-  packageHeight: z.string().min(1, "Package height is required"),
+  shippingInsideDhaka: z
+    .string()
+    .min(1, "Inside Dhaka shipping charge is required")
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, {
+      message: "Inside Dhaka shipping charge must be a non-negative number",
+    }),
+  shippingOutsideDhaka: z
+    .string()
+    .min(1, "Outside Dhaka shipping charge is required")
+    .transform((val) => Number(val))
+    .refine((val) => !isNaN(val) && val >= 0, {
+      message: "Outside Dhaka shipping charge must be a non-negative number",
+    }),
   warrantyType: z.string().min(1, "Warranty type is required"),
   warrantyTime: z.string().optional(),
   warrantyPolicy: z.string().optional(),
   status: z.string().min(1, "Status is required"),
   metaData: z.object({
-    metaTitle: z.string().min(1, "Meta title is required"),
-    metaDescription: z.string().min(1, "Meta description is required"),
+    metaTitle: z.string().optional(),
+    metaDescription: z.string().optional(),
   }),
   description: z.string().min(1, "Description is required"),
   shortDescription: z.string().min(1, "Short description is required"),

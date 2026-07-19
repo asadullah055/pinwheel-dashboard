@@ -10,10 +10,8 @@ export const buildProductFormData = (data,attributes, variants) => {
   formData.append("warrantyType", data.warrantyType || "");
   formData.append("warrantyTime", data.warrantyTime || "");
   formData.append("warrantyPolicy", data.warrantyPolicy || "");
-  formData.append("weight", data.weight || "");
-  formData.append("length", data.length || "");
-  formData.append("width", data.width || "");
-  formData.append("height", data.height || "");
+  formData.append("shippingInsideDhaka", data.shippingInsideDhaka ?? "80");
+  formData.append("shippingOutsideDhaka", data.shippingOutsideDhaka ?? "120");
   formData.append("seoTitle", data.seoTitle || "");
   formData.append("seoContent", data.seoContent || "");
 

@@ -31,7 +31,11 @@ const Sidebar = ({ show }) => {
     >
       <div className="text-2xl font-bold p-4 rounded-sm">
         <Link to="/">
-          <img className="rounded-sm bg-white" src="/image/logo.png" alt="Logo" />
+          <img
+            className="rounded-sm bg-[#eef2f7]"
+            src="/image/mainlogo.png"
+            alt="Logo"
+          />
         </Link>
       </div>
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">

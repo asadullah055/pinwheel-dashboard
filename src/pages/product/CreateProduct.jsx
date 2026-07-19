@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { buildProductFormData } from "../../../utils/formDataHelper";
 import Loading from "../../components/Loading";
 import BasicInfo from "../../components/Product/BasicInfo";
@@ -12,10 +13,18 @@ import { useGetAllBrandsQuery } from "../../features/Brand/brandApi";
 import { useGetDropdownCategoriesQuery } from "../../features/category/categoryApi";
 import { useCreateProductMutation } from "../../features/product/productApi";
 const CreateProduct = () => {
+  const navigate = useNavigate();
   // 🔹 সব Variant ডাটা এখানে থাকবে
   const [attributes, setAttributes] = useState([]);
   const [variantData, setVariantData] = useState({});
-  const [applyAll, setApplyAll] = useState({ price: "", discountPrice: "", stock: "", sku: "" });
+  const [applyAll, setApplyAll] = useState({
+    price: "",
+    discountPrice: "",
+    discountStartDate: "",
+    discountEndDate: "",
+    stock: "",
+    sku: "",
+  });
   const [availability, setAvailability] = useState(true);
   const [description, setDescription] = useState("");
   const [shortDescription, setShortDescription] = useState("");
@@ -24,7 +33,13 @@ const CreateProduct = () => {
   const listCategories = categoryData?.categories || [];
   const listAllBrands = brandData?.brands || [];
   const { control, handleSubmit, formState: { errors } } = useForm({
-
+    defaultValues: {
+      warrantyType: "no warranty",
+      shippingInsideDhaka: "80",
+      shippingOutsideDhaka: "120",
+      seoTitle: "",
+      seoContent: "",
+    },
   });
   const [createProduct, { isLoading }] = useCreateProductMutation();
   const onSubmit = async (data) => {
@@ -35,6 +50,8 @@ const CreateProduct = () => {
           sku: variant.sku || "",
           price: variant.price || "",
           discountPrice: variant.discountPrice || "",
+          discountStartDate: variant.discountStartDate || "",
+          discountEndDate: variant.discountEndDate || "",
           stock: variant.stock || "",
           availability: variant.availability !== false,
         };
@@ -44,6 +61,8 @@ const CreateProduct = () => {
           sku: variant.sku || "",
           price: variant.price || "",
           discountPrice: variant.discountPrice || "",
+          discountStartDate: variant.discountStartDate || "",
+          discountEndDate: variant.discountEndDate || "",
           stock: variant.stock || "",
           availability: variant.availability !== false,
         };
@@ -65,6 +84,7 @@ const CreateProduct = () => {
     try {
       const res = await createProduct(formData).unwrap();
       toast.success(res?.message || "Product created successfully");
+      navigate("/product/list");
 
     } catch (err) {
       toast.error(err?.data?.message || "Something went wrong");

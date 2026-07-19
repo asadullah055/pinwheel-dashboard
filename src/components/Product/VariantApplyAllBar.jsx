@@ -1,7 +1,6 @@
 const VariantApplyAllBar = ({ applyAll, setApplyAll, handleApplyAll }) => {
     return (
-        <div className="flex items-center gap-2 rounded-md px-4 py-2">
-            {/* Price */}
+        <div className="flex flex-wrap items-center gap-2 rounded-md px-4 py-2">
             <div className="flex items-center border rounded px-2 py-1 bg-white">
                 <span className="text-gray-600 mr-1">৳</span>
                 <input
@@ -13,7 +12,6 @@ const VariantApplyAllBar = ({ applyAll, setApplyAll, handleApplyAll }) => {
                 />
             </div>
 
-            {/* Discount Price */}
             <div className="flex items-center border rounded px-2 py-1 bg-white">
                 <span className="text-gray-600 mr-1">৳</span>
                 <input
@@ -25,7 +23,22 @@ const VariantApplyAllBar = ({ applyAll, setApplyAll, handleApplyAll }) => {
                 />
             </div>
 
-            {/* Stock */}
+            <input
+                type="date"
+                title="Discount start date"
+                className="border rounded px-2 py-1 bg-white outline-none focus:ring-1 focus:ring-blue-200 text-sm"
+                value={applyAll.discountStartDate}
+                onChange={(e) => setApplyAll({ ...applyAll, discountStartDate: e.target.value })}
+            />
+
+            <input
+                type="date"
+                title="Discount end date"
+                className="border rounded px-2 py-1 bg-white outline-none focus:ring-1 focus:ring-blue-200 text-sm"
+                value={applyAll.discountEndDate}
+                onChange={(e) => setApplyAll({ ...applyAll, discountEndDate: e.target.value })}
+            />
+
             <div className="flex items-center border rounded px-2 py-1 bg-white">
                 <input
                     type="text"
@@ -36,7 +49,6 @@ const VariantApplyAllBar = ({ applyAll, setApplyAll, handleApplyAll }) => {
                 />
             </div>
 
-            {/* SKU */}
             <div className="flex items-center border rounded px-2 py-1 bg-white">
                 <input
                     type="text"

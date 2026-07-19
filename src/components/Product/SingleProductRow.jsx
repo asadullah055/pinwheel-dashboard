@@ -34,6 +34,26 @@ const SingleProductRow = ({ attributes, variantData, handleChange, validatePrice
                 />
             </td>
 
+            {/* Discount Start Date */}
+            <td className="border border-gray-300 p-2">
+                <input
+                    type="date"
+                    className="w-full px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                    value={variantData["single"]?.discountStartDate || ""}
+                    onChange={(e) => handleChange("single", "discountStartDate", e.target.value)}
+                />
+            </td>
+
+            {/* Discount End Date */}
+            <td className="border border-gray-300 p-2">
+                <input
+                    type="date"
+                    className="w-full px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+                    value={variantData["single"]?.discountEndDate || ""}
+                    onChange={(e) => handleChange("single", "discountEndDate", e.target.value)}
+                />
+            </td>
+
             {/* Stock */}
             <td className="border border-gray-300 p-2">
                 <input

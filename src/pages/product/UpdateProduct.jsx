@@ -30,6 +30,8 @@ export default function UpdateProduct() {
   const [applyAll, setApplyAll] = useState({
     price: "",
     discountPrice: "",
+    discountStartDate: "",
+    discountEndDate: "",
     stock: "",
     sku: "",
   });
@@ -57,7 +59,15 @@ export default function UpdateProduct() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: {
+      warrantyType: "no warranty",
+      shippingInsideDhaka: "80",
+      shippingOutsideDhaka: "120",
+      seoTitle: "",
+      seoContent: "",
+    },
+  });
 
   // 🔹 WHEN PRODUCT DATA ARRIVES → PREFILL FORM + STATE
   // 🔹 WHEN PRODUCT DATA ARRIVES → PREFILL FORM + STATE
@@ -69,6 +79,12 @@ export default function UpdateProduct() {
     if (!singleProductData?.product) return;
 
     const p = singleProductData.product;
+    const formatDateForInput = (date) => {
+      if (!date) return "";
+      const parsedDate = new Date(date);
+      if (Number.isNaN(parsedDate.getTime())) return "";
+      return parsedDate.toISOString().slice(0, 10);
+    };
 
     // Prefill basic form fields
     reset({
@@ -78,9 +94,11 @@ export default function UpdateProduct() {
       regularPrice: p.price,
       discountPrice: p.discountPrice,
       warranty: p.warranty,
-      warrantyType: p.warrantyType,
+      warrantyType: p.warrantyType || "no warranty",
       warrantyTime: p.warrantyTime,
       warrantyPolicy: p.warrantyPolicy,
+      shippingInsideDhaka: p.shippingCharge?.insideDhaka ?? 80,
+      shippingOutsideDhaka: p.shippingCharge?.outsideDhaka ?? 120,
       seoTitle: p.seoTitle,
       seoContent: p.seoContent,
       weight: p.weight,
@@ -141,6 +159,8 @@ export default function UpdateProduct() {
         sku: v.sku,
         price: v.price,
         discountPrice: v.discountPrice,
+        discountStartDate: formatDateForInput(v.discountStartDate),
+        discountEndDate: formatDateForInput(v.discountEndDate),
         stock: v.stock,
         availability: v.availability !== false
       };
@@ -158,6 +178,8 @@ export default function UpdateProduct() {
           sku: variant.sku,
           price: variant.price,
           discountPrice: variant.discountPrice,
+          discountStartDate: variant.discountStartDate,
+          discountEndDate: variant.discountEndDate,
           stock: variant.stock,
           availability: variant.availability !== false,
         };
@@ -169,6 +191,8 @@ export default function UpdateProduct() {
           sku: variant.sku,
           price: variant.price,
           discountPrice: variant.discountPrice,
+          discountStartDate: variant.discountStartDate,
+          discountEndDate: variant.discountEndDate,
           stock: variant.stock,
           availability: variant.availability !== false,
         };

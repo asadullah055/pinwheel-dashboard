@@ -76,6 +76,26 @@ const VariantRow = ({
         />
       </td>
 
+      {/* Discount Start Date */}
+      <td className="border border-gray-300 p-2">
+        <input
+          type="date"
+          className="w-full px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+          value={variantData[key]?.discountStartDate || ""}
+          onChange={(e) => handleChange(key, "discountStartDate", e.target.value)}
+        />
+      </td>
+
+      {/* Discount End Date */}
+      <td className="border border-gray-300 p-2">
+        <input
+          type="date"
+          className="w-full px-2 py-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+          value={variantData[key]?.discountEndDate || ""}
+          onChange={(e) => handleChange(key, "discountEndDate", e.target.value)}
+        />
+      </td>
+
       {/* Stock */}
       <td className="border border-gray-300 p-2">
         <input

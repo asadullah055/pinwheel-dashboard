@@ -50,6 +50,10 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
             price: applyAll.price !== "" ? applyAll.price : prev.single?.price || "",
             discountPrice:
               applyAll.discountPrice !== "" ? applyAll.discountPrice : prev.single?.discountPrice || "",
+            discountStartDate:
+              applyAll.discountStartDate !== "" ? applyAll.discountStartDate : prev.single?.discountStartDate || "",
+            discountEndDate:
+              applyAll.discountEndDate !== "" ? applyAll.discountEndDate : prev.single?.discountEndDate || "",
             stock: applyAll.stock !== "" ? applyAll.stock : prev.single?.stock || "",
             sku: applyAll.sku !== "" ? applyAll.sku : prev.single?.sku || "",
             availability: prev.single?.availability ?? true
@@ -69,6 +73,10 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
           price: applyAll.price !== "" ? applyAll.price : prev[key]?.price || "",
           discountPrice:
             applyAll.discountPrice !== "" ? applyAll.discountPrice : prev[key]?.discountPrice || "",
+          discountStartDate:
+            applyAll.discountStartDate !== "" ? applyAll.discountStartDate : prev[key]?.discountStartDate || "",
+          discountEndDate:
+            applyAll.discountEndDate !== "" ? applyAll.discountEndDate : prev[key]?.discountEndDate || "",
           stock: applyAll.stock !== "" ? applyAll.stock : prev[key]?.stock || "",
           sku: applyAll.sku !== "" ? sku : prev[key]?.sku || "",
           availability: prev[key]?.availability ?? true,

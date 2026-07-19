@@ -12,17 +12,15 @@ const SEOMeatData = ({ errors, control }) => {
                     title="Seo Title"
                     name="seoTitle"
                     control={control}
-                    star={true}
                     error={errors.seoTitle}
                     htmlFor="seoTitleInput"
                 />
                 <label htmlFor="seoContent" className="font-medium mb-2 block">
-                    Seo Content <span className="text-red-500">*</span>
+                    Seo Content
                 </label>
                 <Controller
                     name="seoContent"
                     control={control}
-                    rules={{ required: "SEO Content is required" }}
                     render={({ field }) => (
                         <textarea
                             {...field}

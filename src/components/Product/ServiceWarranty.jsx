@@ -8,6 +8,7 @@ const ServiceWarranty = ({ errors, control }) => {
     const warrantyType = useWatch({
         control,
         name: "warrantyType",
+        defaultValue: "no warranty",
     });
 
     const isNoWarranty = warrantyType === "no warranty";
@@ -24,6 +25,7 @@ const ServiceWarranty = ({ errors, control }) => {
                             name="warrantyType"
                             star={true}
                             control={control}
+                            rules={{ required: "Warranty Type is required" }}
                             options={[
                                 { _id: "no warranty", name: "No Warranty" },
                                 { _id: "brand warranty", name: "Brand Warranty" },
@@ -66,41 +68,31 @@ const ServiceWarranty = ({ errors, control }) => {
                 )}
             </div>
             <div className="px-4">
-                <p>Package Info</p>
+                <p>Shipping Charge</p>
                 <div className="mt-2">
                     <FieldSet>
                         <div className="grid grid-cols-2 gap-4">
                             <Input
-                                title="Weight (kg)"
-                                name="weight"
+                                title="Inside Dhaka"
+                                name="shippingInsideDhaka"
                                 star={true}
                                 control={control}
-                                error={errors.weight}
-                                htmlFor="weightInput"
+                                rules={{
+                                    min: { value: 0, message: "Inside Dhaka shipping charge cannot be negative" },
+                                }}
+                                error={errors.shippingInsideDhaka}
+                                htmlFor="shippingInsideDhakaInput"
                             />
                             <Input
-                                title="Length (inches)"
-                                name="length"
+                                title="Outside Dhaka"
+                                name="shippingOutsideDhaka"
                                 control={control}
                                 star={true}
-                                error={errors.length}
-                                htmlFor="lengthInput"
-                            />
-                            <Input
-                                title="Width (inches)"
-                                name="width"
-                                star={true}
-                                control={control}
-                                error={errors.width}
-                                htmlFor="widthInput"
-                            />
-                            <Input
-                                title="Height (inches)"
-                                name="height"
-                                control={control}
-                                star={true}
-                                error={errors.height}
-                                htmlFor="heightInput"
+                                rules={{
+                                    min: { value: 0, message: "Outside Dhaka shipping charge cannot be negative" },
+                                }}
+                                error={errors.shippingOutsideDhaka}
+                                htmlFor="shippingOutsideDhakaInput"
                             />
                         </div>
                     </FieldSet>

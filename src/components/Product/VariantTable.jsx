@@ -5,8 +5,8 @@ const VariantTable = ({ attributes, rows, variantData, handleChange, validatePri
 
 
     return (
-        <div className="px-4"><div className="rounded-lg overflow-hidden border border-gray-300 ">
-            <table className="w-full text-sm">
+        <div className="px-4"><div className="rounded-lg overflow-x-auto border border-gray-300 ">
+            <table className="w-full min-w-[980px] text-sm">
                 <thead className="bg-gray-100">
                     <tr>
                         {attributes.map((attr, i) => (
@@ -21,6 +21,8 @@ const VariantTable = ({ attributes, rows, variantData, handleChange, validatePri
                         ))}
                         <th className="border-b border-r border-gray-300 p-2">Price</th>
                         <th className="border-b border-r border-gray-300 p-2">Discount Price</th>
+                        <th className="border-b border-r border-gray-300 p-2">Discount Start</th>
+                        <th className="border-b border-r border-gray-300 p-2">Discount End</th>
                         <th className="border-b border-r border-gray-300 p-2">Stock</th>
                         <th className="border-b border-r border-gray-300 p-2">Shop SKU</th>
                         <th className="border-b border-gray-300 p-2 rounded-tr-lg">Availability</th>
