@@ -32,8 +32,8 @@ const Sidebar = ({ show }) => {
       <div className="text-2xl font-bold p-4 rounded-sm">
         <Link to="/">
           <img
-            className="rounded-sm bg-[#eef2f7]"
-            src="/image/mainlogo.png"
+            className="rounded-sm"
+            src="/image/darklogo.png"
             alt="Logo"
           />
         </Link>
