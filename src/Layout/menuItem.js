@@ -5,6 +5,7 @@ import { MdOutlineFlag, MdOutlineProductionQuantityLimits } from "react-icons/md
 import { RiCoupon3Line } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
 import { TbBrandBootstrap } from "react-icons/tb";
+import { LuSettings } from "react-icons/lu";
 
 export const navMenu = [
   {
@@ -114,5 +115,11 @@ export const navMenu = [
     icon: GrUserAdmin,
     path: "/user",
     role: "admin",
+  },
+  {
+    id: 10,
+    title: "Settings",
+    icon: LuSettings,
+    path: "/settings",
   },
 ];

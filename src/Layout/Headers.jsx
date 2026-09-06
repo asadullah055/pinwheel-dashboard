@@ -2,10 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { FiMenu } from "react-icons/fi";
 import { LuSettings } from "react-icons/lu";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import LogoutButton from "../components/LogoutButton";
 
 const Headers = ({ showHide }) => {
   const { user } = useSelector((state) => state.auth);
+  const avatarUrl =
+    user.shopLogo && user.shopLogo !== user.profileImageUrl ? user.shopLogo : "";
+  const displayName = user.shopName || user.name;
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -35,25 +39,21 @@ const Headers = ({ showHide }) => {
         {/* Right */}
         <div className="flex items-center space-x-4 relative" ref={dropdownRef}>
           <h3 className="capitalize">
-            {user.role === "admin" ? "admin" : user.name}
+            {user.role === "admin" ? "admin" : displayName}
           </h3>
 
           {/* 🔹 Avatar (toggle button) */}
           <div
-            className="cursor-pointer"
+            className="h-10 w-10 cursor-pointer"
             onClick={() => setOpen((prev) => !prev)}
           >
-            {user.profileImageUrl ? (
+            {avatarUrl ? (
               <img
-                src={user.profileImageUrl}
-                alt={user.name}
-                className="rounded-full w-10 h-10"
+                src={avatarUrl}
+                alt={displayName}
+                className="rounded-full w-10 h-10 object-cover"
               />
-            ) : (
-              <div className="bg-gray-300 w-10 h-10 rounded-full flex items-center justify-center text-xl font-semibold">
-                {user.name?.trim().charAt(0).toUpperCase()}
-              </div>
-            )}
+            ) : null}
           </div>
 
           {/* <LogoutButton /> */}
@@ -68,29 +68,29 @@ const Headers = ({ showHide }) => {
           >
             {/* Header */}
             <div className="flex items-center gap-3 px-4 py-3 border-b">
-              {user.profileImageUrl ? (
+              {avatarUrl ? (
                 <img
-                  src={user.profileImageUrl}
-                  alt={user.name}
-                  className="rounded-full w-10 h-10"
+                  src={avatarUrl}
+                  alt={displayName}
+                  className="rounded-full w-10 h-10 object-cover"
                 />
-              ) : (
-                <div className="bg-gray-300 w-10 h-10 rounded-full flex items-center justify-center text-xl font-semibold">
-                  {user.name?.trim().charAt(0).toUpperCase()}
-                </div>
-              )}
+              ) : null}
               <div className="leading-tight">
-                <p className="font-semibold">{user.name}</p>
+                <p className="font-semibold">{displayName}</p>
                 <p className="text-sm text-gray-500">{user.email}</p>
               </div>
             </div>
 
             {/* Actions */}
             <div className="">
-              <button className="flex items-center gap-2 w-full px-4 py-4 border-b hover:bg-gray-200 text-md">
+              <Link
+                to="/settings"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 w-full px-4 py-4 border-b hover:bg-gray-200 text-md"
+              >
                 <LuSettings size={20} />
                 Settings
-              </button>
+              </Link>
 
               <div className="px-4 py-2 hover:bg-gray-200">
                 <LogoutButton bgTextColor="w-full text-md" />

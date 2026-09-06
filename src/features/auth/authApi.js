@@ -33,6 +33,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: baseQueryWithReauth,
+  tagTypes: ["Profile"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (formData) => ({
@@ -56,6 +57,15 @@ export const authApi = createApi({
     }),
     getUser: builder.query({
       query: () => "/auth/profile", // change endpoint per your backend
+      providesTags: ["Profile"],
+    }),
+    updateSellerProfile: builder.mutation({
+      query: (formData) => ({
+        url: "/auth/seller-profile",
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: ["Profile"],
     }),
   }),
 });
@@ -65,4 +75,5 @@ export const {
   useRegisterMutation,
   useLogoutMutation,
   useGetUserQuery,
+  useUpdateSellerProfileMutation,
 } = authApi;

@@ -14,6 +14,13 @@ import {
 import Loader from "../Loader";
 import Pagination from "../Pagination";
 
+const storefrontBaseUrl = (
+  import.meta.env.VITE_STOREFRONT_URL ||
+  (import.meta.env.PROD
+    ? "https://www.cartout.com.bd"
+    : "http://localhost:3000")
+).replace(/\/$/, "");
+
 const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -107,11 +114,15 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
                     className="w-16 h-16 rounded-md object-cover"
                   />
                   <div>
-                    <h3
-                      className="font-medium text-gray-800"
+                    <a
+                      href={`${storefrontBaseUrl}/product/${product.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-gray-800 hover:text-blue-600 hover:underline"
+                      title="View as customer"
                     >
                       {product.productName}
-                    </h3>
+                    </a>
 
                     <p className="text-xs text-gray-500">SKU-{product.sku}</p>
 

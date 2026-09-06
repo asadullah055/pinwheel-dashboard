@@ -20,6 +20,7 @@ import Product from "./pages/product/Product";
 import UpdateProduct from "./pages/product/UpdateProduct";
 import User from "./pages/User/User";
 import Banner from "./pages/Banner/Banner";
+import Settings from "./pages/settings/Settings";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route path="user" element={<User />} />
           // banner
           <Route path="banner" element={<Banner />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
 
         {/* Public routes without protection */}
