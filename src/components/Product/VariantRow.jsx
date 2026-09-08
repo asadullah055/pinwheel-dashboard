@@ -1,3 +1,5 @@
+import { getVariantKey } from "./variantKey";
+
 const VariantRow = ({
   row,
   rowIdx,
@@ -9,7 +11,7 @@ const VariantRow = ({
   toggleAvailability
 }) => {
   // 🔥 FIX: Normalize the key to lowercase to match variantData keys
-  const key = row.map(val => val.toLowerCase()).join("|");
+  const key = getVariantKey(row);
 
 
   const availability = variantData[key]?.availability !== false;

@@ -16,8 +16,18 @@ export const productApi = apiSlice.injectEndpoints({
 
     // ✅ Get all products (with pagination)
     getAllProducts: builder.query({
-      query: ({ page = 1, limit = 10 }) =>
-        `/product/getAllProducts?page=${page}&limit=${limit}`,
+      query: ({ page = 1, limit = 10, sku = "" }) => {
+        const params = new URLSearchParams({
+          page: String(page),
+          limit: String(limit),
+        });
+
+        if (sku.trim()) {
+          params.set("sku", sku.trim());
+        }
+
+        return `/product/getAllProducts?${params.toString()}`;
+      },
       providesTags: (result) =>
         result?.products
           ? [

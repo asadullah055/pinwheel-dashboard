@@ -1,6 +1,7 @@
 import { getGroupedRows } from './createProductHelpers';
 import VariantApplyAllBar from './VariantApplyAllBar';
 import VariantAttributeForm from './VariantAttributeForm';
+import { getSafeSkuSuffix, getVariantKey } from './variantKey';
 import { validatePrice } from './variantHelpers';
 import VariantTable from './VariantTable';
 
@@ -64,10 +65,11 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
       const updated = {};
       rows.forEach((row) => {
 
-        const key = row.map(val => val.toLowerCase()).join("|");
+        const key = getVariantKey(row);
 
         let sku = applyAll.sku;
-        if (sku) sku += "-" + row.join("-");
+        const skuSuffix = getSafeSkuSuffix(row);
+        if (sku && skuSuffix) sku += "-" + skuSuffix;
 
         updated[key] = {
           price: applyAll.price !== "" ? applyAll.price : prev[key]?.price || "",

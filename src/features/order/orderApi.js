@@ -34,6 +34,17 @@ export const orderApi = apiSlice.injectEndpoints({
         { type: "Order", id: "LIST" },
       ],
     }),
+    updateOrderStatus: builder.mutation({
+      query: ({ orderId, status }) => ({
+        url: `/order/${orderId}/status`,
+        method: "PATCH",
+        body: { status },
+      }),
+      invalidatesTags: (_result, _error, { orderId }) => [
+        { type: "Order", id: orderId },
+        { type: "Order", id: "LIST" },
+      ],
+    }),
   }),
 });
 
@@ -41,4 +52,5 @@ export const {
   useGetOrderByIdQuery,
   useGetOrdersQuery,
   useUpdateOrderItemStatusMutation,
+  useUpdateOrderStatusMutation,
 } = orderApi;

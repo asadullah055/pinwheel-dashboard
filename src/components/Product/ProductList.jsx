@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import PriceModal from "./PriceModal";
 import StockModal from "./StockModal";
 // ✅ RTK QUERY HOOK
 import { BiSolidEditAlt } from "react-icons/bi";
+import { IoSearchOutline } from "react-icons/io5";
 import { getPriceRange } from "../../../utils/getPriceRange";
 import {
   useGetAllProductsQuery,
@@ -25,11 +27,17 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isStockModal, setIsStockModal] = useState(false);
-
-  const { data, isLoading, isError, error } = useGetAllProductsQuery({
+  const userRole = useSelector((state) => state.auth?.user?.role);
+  const isAdmin = userRole === "admin";
+  const [skuInput, setSkuInput] = useState("");
+  const [skuSearch, setSkuSearch] = useState("");
+  const queryArg = {
     page: currentPage,
     limit: perPage,
-  });
+    sku: isAdmin ? skuSearch : "",
+  };
+
+  const { data, isLoading, isError, error } = useGetAllProductsQuery(queryArg);
 
 
   const [updateStatus] = useUpdateStatusMutation();
@@ -56,7 +64,7 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
       await updateStatus({
         id: productId,
         data: { status: nextStatus },
-        queryArg: { page: currentPage, limit: perPage }, // Pass with mutation for dynamic cache update
+        queryArg, // Pass with mutation for dynamic cache update
       }).unwrap();
       toast.success("Product status updated");
     } catch (error) {
@@ -87,6 +95,18 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
 
   const handlePerPageChange = (itemsPerPage) => {
     setPerPage(itemsPerPage);
+    setCurrentPage(1);
+  };
+
+  const handleSkuSearch = (e) => {
+    e.preventDefault();
+    setSkuSearch(skuInput.trim());
+    setCurrentPage(1);
+  };
+
+  const clearSkuSearch = () => {
+    setSkuInput("");
+    setSkuSearch("");
     setCurrentPage(1);
   };
 
@@ -124,7 +144,7 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
                       {product.productName}
                     </a>
 
-                    <p className="text-xs text-gray-500">SKU-{product.sku}</p>
+                    <p className="text-xs text-gray-500">SKU: {product.sku}</p>
 
 
                   </div>
@@ -291,6 +311,40 @@ const ProductList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
   }
   return (
     <div className="relative border rounded-md p-2">
+      {isAdmin && (
+        <form
+          onSubmit={handleSkuSearch}
+          className="flex flex-col gap-2 p-2 sm:flex-row sm:items-center"
+        >
+          <div className="relative w-full sm:max-w-sm">
+            <IoSearchOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="search"
+              value={skuInput}
+              onChange={(e) => setSkuInput(e.target.value)}
+              placeholder="Search by SKU"
+              className="w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+          </div>
+          <div className="flex shrink-0 gap-2">
+            <button
+              type="submit"
+              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+            >
+              Search
+            </button>
+            {skuSearch && (
+              <button
+                type="button"
+                onClick={clearSkuSearch}
+                className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </form>
+      )}
       <table className="table static  border-collapse">
         <thead className="text-[#111] text-[16px] bg-gray-100 rounded-t-md">
           <tr className="rounded">

@@ -10,6 +10,7 @@ import PriceStockVariants from "../../components/Product/PriceStockVariants";
 import ProductDescription from "../../components/Product/ProductDescription";
 import SEOMeatData from "../../components/Product/SEOMeatData";
 import ServiceWarranty from "../../components/Product/ServiceWarranty";
+import { findOriginalVariantValue, getVariantKey } from "../../components/Product/variantKey";
 
 // API Hooks
 import { useGetAllBrandsQuery } from "../../features/Brand/brandApi";
@@ -121,7 +122,7 @@ export default function UpdateProduct() {
       return {
         ...attr,
         values: attr.values, // Keep original case for display
-        normalizedValues: attr.values.map(val => val.toLowerCase()) // Lowercase for keys
+        normalizedValues: attr.values.map(val => getVariantKey([val]))
       };
     });
 
@@ -149,10 +150,9 @@ export default function UpdateProduct() {
               attrValue = v[attr.name] || v[attr.name.toLowerCase()] || "";
             }
 
-            // Normalize the value to lowercase for consistent key generation
-            return (attrValue || "").toLowerCase();
-          })
-          .join("|");
+            return attrValue || "";
+          });
+        key = getVariantKey(key);
       }
 
       tempVariantData[key] = {
@@ -201,8 +201,9 @@ export default function UpdateProduct() {
         attributes.forEach((attr, index) => {
           if (lowercaseValues[index]) {
             // Find the original case value from attribute.values
-            const originalValue = attr.values.find(
-              val => val.toLowerCase() === lowercaseValues[index]
+            const originalValue = findOriginalVariantValue(
+              attr.values,
+              lowercaseValues[index]
             );
 
             // Use original case value for database

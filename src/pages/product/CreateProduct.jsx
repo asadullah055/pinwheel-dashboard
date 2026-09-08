@@ -9,6 +9,7 @@ import PriceStockVariants from "../../components/Product/PriceStockVariants";
 import ProductDescription from "../../components/Product/ProductDescription";
 import SEOMeatData from "../../components/Product/SEOMeatData";
 import ServiceWarranty from "../../components/Product/ServiceWarranty";
+import { findOriginalVariantValue } from "../../components/Product/variantKey";
 import { useGetAllBrandsQuery } from "../../features/Brand/brandApi";
 import { useGetDropdownCategoriesQuery } from "../../features/category/categoryApi";
 import { useCreateProductMutation } from "../../features/product/productApi";
@@ -70,7 +71,10 @@ const CreateProduct = () => {
         // add attribute values dynamically
         attributes.forEach((attr, index) => {
           if (attributeValues[index]) {
-            variantObj[attr.name] = attributeValues[index];
+            variantObj[attr.name] =
+              variant._originalValues?.[index] ||
+              findOriginalVariantValue(attr.values, attributeValues[index]) ||
+              attributeValues[index];
           }
         });
 
