@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 // Helpers / Components
 import { buildProductFormData } from "../../../utils/formDataHelper";
 import Loading from "../../components/Loading";
+import { getApiErrorMessage } from "../../utils/apiErrorMessage";
 import BasicInfo from "../../components/Product/BasicInfo";
 import PriceStockVariants from "../../components/Product/PriceStockVariants";
 import ProductDescription from "../../components/Product/ProductDescription";
@@ -229,7 +230,7 @@ export default function UpdateProduct() {
       const res = await updateProduct({ id: productId, data: formData }).unwrap();
       toast.success(res?.message || "Product updated successfully");
     } catch (err) {
-      toast.error(err?.data?.message || "Something went wrong");
+      toast.error(getApiErrorMessage(err));
     }
   };
 

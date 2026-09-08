@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { buildProductFormData } from "../../../utils/formDataHelper";
+import { getApiErrorMessage } from "../../utils/apiErrorMessage";
 import Loading from "../../components/Loading";
 import BasicInfo from "../../components/Product/BasicInfo";
 import PriceStockVariants from "../../components/Product/PriceStockVariants";
@@ -91,7 +92,7 @@ const CreateProduct = () => {
       navigate("/product/list");
 
     } catch (err) {
-      toast.error(err?.data?.message || "Something went wrong");
+      toast.error(getApiErrorMessage(err));
     }
 
   };
