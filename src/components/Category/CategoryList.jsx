@@ -9,7 +9,7 @@ const CategoryList = ({ currentPage, setCurrentPage, perPage, setPerPage }) => {
     limit: perPage,
   });
   const categories = data?.categories || [];
-  const totalCategory = data?.totalCategory || 0;
+  const totalCategory = data?.totalCategories || 0;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);

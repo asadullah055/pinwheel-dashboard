@@ -1,4 +1,6 @@
 import React from "react";
+import { FaRegEdit } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const SingleCategory = ({ category }) => {
   const { name, image, quantity, status, sale } = category || "";
@@ -34,7 +36,14 @@ const SingleCategory = ({ category }) => {
         </span>
       </td>
       <td scope="col" className="py-3 px-4">
-        Action
+        <Link
+          to={`/category/update/${category._id}`}
+          aria-label={`Edit ${name}`}
+          title="Edit category"
+          className="inline-flex text-blue-500 hover:text-blue-700"
+        >
+          <FaRegEdit size={20} />
+        </Link>
       </td>
     </tr>
   );

@@ -8,8 +8,10 @@ import SignUp from "./pages/auth/SignUp";
 import Verify from "./pages/auth/Verify";
 import Brand from "./pages/Brand/Brand";
 import CreateBrand from "./pages/Brand/CreateBrand";
+import EditBrand from "./pages/Brand/EditBrand";
 import Category from "./pages/Category/Category";
 import CreateCategory from "./pages/Category/CreateCategory";
+import EditCategory from "./pages/Category/EditCategory";
 import Coupon from "./pages/coupon/Coupon";
 import Customer from "./pages/customers/Customer";
 import CreateOrder from "./pages/order/CreateOrder";
@@ -35,10 +37,12 @@ function App() {
         >
           <Route path="/" element={<Dashboard />} />
           <Route path="brand/create" element={<CreateBrand />} />
+          <Route path="brand/update/:id" element={<EditBrand />} />
           <Route path="brand/list" element={<Brand />} />
           <Route path="order/list" element={<Order />} />
           // category
           <Route path="category/create" element={<CreateCategory />} />
+          <Route path="category/update/:id" element={<EditCategory />} />
           <Route path="category/list" element={<Category />} />
           // product
           <Route path="product/create" element={<CreateProduct />} />

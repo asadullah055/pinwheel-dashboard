@@ -1,5 +1,6 @@
 import React from "react";
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const SingleBrand = ({ brand }) => {
   const { name, image, quantity, status, sale } = brand || "";
@@ -36,9 +37,14 @@ const SingleBrand = ({ brand }) => {
       </td>
       <td scope="col" className="py-3 px-4">
         <div className="flex items-center gap-2">
-          <span className="text-blue-500">
+          <Link
+            to={`/brand/update/${brand._id}`}
+            aria-label={`Edit ${name}`}
+            title="Edit brand"
+            className="text-blue-500 hover:text-blue-700"
+          >
             <FaRegEdit size={20} />
-          </span>
+          </Link>
           <span className="text-red-500">
             <FaRegTrashAlt size={20} />
           </span>

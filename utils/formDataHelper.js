@@ -16,15 +16,18 @@ export const buildProductFormData = (data,attributes, variants) => {
   formData.append("seoContent", data.seoContent || "");
 
   // ✅ Images (multiple)
-  if (data.images && data.images.length > 0) {
-    data.images.forEach((img) => {
-      if (img instanceof File) {
-        formData.append("images", img);
-      } else {
-        formData.append("existingImages", JSON.stringify(img));
-      }
-    });
-  }
+  // Send the complete list of images that should remain on the product.
+  // An empty array is intentional: it tells the update API that all old
+  // images were removed instead of silently falling back to the old list.
+  const existingImages = [];
+  (data.images || []).forEach((img) => {
+    if (img instanceof File) {
+      formData.append("images", img);
+    } else if (typeof img === "string") {
+      existingImages.push(img);
+    }
+  });
+  formData.append("existingImages", JSON.stringify(existingImages));
 if (attributes && attributes.length > 0) {
     formData.append("attributes", JSON.stringify(attributes));
   }

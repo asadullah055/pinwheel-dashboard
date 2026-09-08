@@ -24,6 +24,20 @@ const categoryApi = apiSlice.injectEndpoints({
       query: () => "/category/dropdownCategories",
       providesTags: ["Category"],
     }),
+
+    getCategoryById: builder.query({
+      query: (id) => `/category/${id}`,
+      providesTags: (_result, _error, id) => [{ type: "Category", id }],
+    }),
+
+    updateCategory: builder.mutation({
+      query: ({ id, formData }) => ({
+        url: `/category/${id}`,
+        method: "PUT",
+        body: formData,
+      }),
+      invalidatesTags: ["Category"],
+    }),
   }),
 });
 
@@ -31,4 +45,6 @@ export const {
   useCreateCategoryMutation,
   useGetAllCategoriesQuery,
   useGetDropdownCategoriesQuery,
+  useGetCategoryByIdQuery,
+  useUpdateCategoryMutation,
 } = categoryApi;
