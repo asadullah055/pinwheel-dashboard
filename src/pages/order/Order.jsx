@@ -11,9 +11,7 @@ const Order = () => {
         </div>
       </div>
       <div className="bg-white p-2 rounded-md">
-        <div className="overflow-x-auto">
-          <OrderList />
-        </div>
+        <OrderList />
       </div>
     </div>
   );

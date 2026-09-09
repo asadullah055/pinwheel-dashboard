@@ -493,14 +493,14 @@ const OrderList = () => {
 
   return (
     <>
-      <div className="mb-4 overflow-x-auto border-b border-gray-200">
-        <div className="flex min-w-max gap-1">
+      <div className="mb-4 border-b border-gray-200">
+        <div className="flex flex-wrap gap-x-4 gap-y-1">
           {ALL_ORDER_STATUSES.map((status) => (
             <button
               key={status}
               type="button"
               onClick={() => handleStatusFilter(status)}
-              className={`group relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition ${
+              className={`group relative flex min-w-[124px] items-center justify-center gap-2 px-2 py-3 text-sm font-medium transition ${
                 activeStatus === status
                   ? "text-blue-600"
                   : "text-gray-500 hover:text-gray-900"
@@ -524,40 +524,42 @@ const OrderList = () => {
         </div>
       </div>
 
-      <table className="table static">
-        <thead className="text-[#111] text-[16px]">
-          <tr>
-            <th scope="col" className="py-3 px-4 w-10 ">
-              <input
-                type="checkbox"
-                className="checkbox checkbox-warning rounded-xs border-gray-400 checkbox-xs"
-              />
-            </th>
-            <th scope="col" className="py-3 px-4">
-              Order ID
-            </th>
-            <th scope="col" className="py-3 px-4">
-              Order Date
-            </th>
-            <th scope="col" className="py-3 px-4">
-              Customer info
-            </th>
-            <th scope="col" className="py-3 px-4">
-              Quantity
-            </th>
-            <th scope="col" className="py-3 px-4">
-              Total amount
-            </th>
-            <th scope="col" className="py-3 px-4">
-              Product Status
-            </th>
-            <th scope="col" className="py-3 px-4">
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody>{content}</tbody>
-      </table>
+      <div className="overflow-x-auto">
+        <table className="table static">
+          <thead className="text-[#111] text-[16px]">
+            <tr>
+              <th scope="col" className="py-3 px-4 w-10 ">
+                <input
+                  type="checkbox"
+                  className="checkbox checkbox-warning rounded-xs border-gray-400 checkbox-xs"
+                />
+              </th>
+              <th scope="col" className="py-3 px-4">
+                Order ID
+              </th>
+              <th scope="col" className="py-3 px-4">
+                Order Date
+              </th>
+              <th scope="col" className="py-3 px-4">
+                Customer info
+              </th>
+              <th scope="col" className="py-3 px-4">
+                Quantity
+              </th>
+              <th scope="col" className="py-3 px-4">
+                Total amount
+              </th>
+              <th scope="col" className="py-3 px-4">
+                Product Status
+              </th>
+              <th scope="col" className="py-3 px-4">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>{content}</tbody>
+        </table>
+      </div>
 
       {!isLoading && !isError && totalOrders > perPage && (
         <Pagination

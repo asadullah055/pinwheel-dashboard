@@ -1,21 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GoDotFill } from "react-icons/go";
 import { IoIosArrowDown } from "react-icons/io";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { navMenu } from "./menuItem";
 
-const Sidebar = ({ show }) => {
+const Sidebar = ({ show, isCollapsed = false, onToggleCollapse }) => {
   const [expandedMenu, setExpandedMenu] = useState(null);
   const location = useLocation();
   const toggleMenu = (id) => {
     setExpandedMenu((prev) => (prev === id ? null : id));
   };
 
+  useEffect(() => {
+    if (isCollapsed) {
+      setExpandedMenu(null);
+    }
+  }, [isCollapsed]);
+
   // Get user and role from Redux state
   const user = useSelector((state) => state.auth.user);
   const userRole = user?.role;
-  console.log(user)
+
   // Filter nav items by role: show all for admin, else omit items with role 'admin'
   const filteredMenu = navMenu.filter((nav) => {
     // if nav has no role restriction, always include
@@ -26,48 +33,87 @@ const Sidebar = ({ show }) => {
 
   return (
     <aside
-      className={`h-screen absolute z-99 left-0 top-0 bg-[#1C2434] md:static text-white w-64 md:translate-x-0 transition-all duration-300 ${show ? "-translate-x-0" : "-translate-x-full"
+      className={`h-screen absolute z-99 left-0 top-0 bg-[#1C2434] md:static text-white w-64 md:translate-x-0 transition-all duration-300 ${isCollapsed ? "md:w-20" : "md:w-64"} ${show ? "-translate-x-0" : "-translate-x-full"
         } flex flex-col `}
     >
-      <div className="text-2xl font-bold p-4 rounded-sm">
-        <Link to="/">
+      <div className={`flex items-center gap-2 p-4 ${isCollapsed ? "md:justify-center md:px-3" : "justify-between"}`}>
+        <Link className={`${isCollapsed ? "md:hidden" : "block"}`} to="/">
           <img
             className="rounded-sm"
             src="/image/darklogo.png"
             alt="Logo"
           />
         </Link>
+        <button
+          type="button"
+          className="hidden h-8 w-8 shrink-0 items-center justify-center rounded bg-white/10 text-white transition hover:bg-white/20 md:flex"
+          onClick={onToggleCollapse}
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {isCollapsed ? <FiChevronRight /> : <FiChevronLeft />}
+        </button>
       </div>
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
-        <nav className="flex-1 px-4">
+        <nav className={`flex-1 ${isCollapsed ? "px-3" : "px-4"}`}>
           <ul className="font-medium">
             {filteredMenu.map((nav) => {
               // Check if the current path matches any child path
               const activeParent = nav.child?.some(
                 (item) => location.pathname === item.path
               );
+              const Icon = nav.icon;
+              const isActive = location.pathname === nav.path || activeParent;
+              const itemContent = (
+                <>
+                  <div className={`flex items-center ${isCollapsed ? "justify-center" : "gap-2"}`}>
+                    <span className="text-lg">{Icon ? <Icon /> : null}</span>
+                    {!isCollapsed && <span>{nav.title}</span>}
+                  </div>
+                  {nav.child && !isCollapsed && (
+                    <IoIosArrowDown
+                      className={`transition-all duration-300 ${expandedMenu === nav.id ? "rotate-180 " : ""
+                        }`}
+                    />
+                  )}
+                </>
+              );
+
               return (
                 <li key={nav.id} className="mb-2 flex flex-col">
-                  <div
-                    className={`flex items-center justify-between cursor-pointer rounded px-[8px] py-[10px] hover:bg-gray-700 text-[#dee4ee] transition-all duration-150 ${location.pathname === nav.path || activeParent
-                      ? "bg-gray-700 text-white"
-                      : ""
-                      }`}
-                    onClick={() => toggleMenu(nav.id)}
-                  >
-                    <Link className="text-[14px] w-full" to={nav.path}>
-                      <div className="flex items-center gap-2">
-                        <span>{<nav.icon />}</span> {nav.title}
-                      </div>
+                  {nav.child ? (
+                    <button
+                      type="button"
+                      className={`flex w-full items-center rounded px-[8px] py-[10px] text-left text-[#dee4ee] transition-all duration-150 hover:bg-gray-700 ${isCollapsed ? "justify-center" : "justify-between"} ${isActive
+                        ? "bg-gray-700 text-white"
+                        : ""
+                        }`}
+                      onClick={() => {
+                        if (isCollapsed) {
+                          onToggleCollapse?.();
+                          setExpandedMenu(nav.id);
+                          return;
+                        }
+
+                        toggleMenu(nav.id);
+                      }}
+                      title={nav.title}
+                    >
+                      {itemContent}
+                    </button>
+                  ) : (
+                    <Link
+                      className={`flex items-center rounded px-[8px] py-[10px] text-[14px] text-[#dee4ee] transition-all duration-150 hover:bg-gray-700 ${isCollapsed ? "justify-center" : "justify-between"} ${isActive
+                        ? "bg-gray-700 text-white"
+                        : ""
+                        }`}
+                      to={nav.path}
+                      title={nav.title}
+                    >
+                      {itemContent}
                     </Link>
-                    {nav.child && (
-                      <IoIosArrowDown
-                        className={`transition-all duration-300 ${expandedMenu === nav.id ? "rotate-180 " : ""
-                          }`}
-                      />
-                    )}
-                  </div>
-                  {nav.child && (
+                  )}
+                  {nav.child && !isCollapsed && (
                     <ul
                       className={`pl-4 overflow-hidden transition-all duration-300 ease-in-out ${expandedMenu === nav.id ? "max-h-52" : "max-h-0"
                         }`}
