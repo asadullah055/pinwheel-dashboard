@@ -20,6 +20,7 @@ import OrderDetails from "./pages/order/OrderDetails";
 import CreateProduct from "./pages/product/CreateProduct";
 import Product from "./pages/product/Product";
 import UpdateProduct from "./pages/product/UpdateProduct";
+import NotFound from "./pages/NotFound";
 import User from "./pages/User/User";
 import Banner from "./pages/Banner/Banner";
 import Settings from "./pages/settings/Settings";
@@ -65,6 +66,7 @@ function App() {
         <Route path="/seller/sign-up" element={<SignUp />} />
         <Route path="/seller/verify" element={<Verify />} />
         <Route path="/seller/forgot-password" element={<ForgetPassword />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

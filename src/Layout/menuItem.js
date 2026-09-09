@@ -111,7 +111,7 @@ export const navMenu = [
    },
   {
     id: 8,
-    title: "User",
+    title: "Seller List",
     icon: GrUserAdmin,
     path: "/user",
     role: "admin",
