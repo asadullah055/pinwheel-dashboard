@@ -10,7 +10,7 @@ import PriceStockVariants from "../../components/Product/PriceStockVariants";
 import ProductDescription from "../../components/Product/ProductDescription";
 import SEOMeatData from "../../components/Product/SEOMeatData";
 import ServiceWarranty from "../../components/Product/ServiceWarranty";
-import { findOriginalVariantValue } from "../../components/Product/variantKey";
+import { buildVariantsFromCurrentRows } from "../../components/Product/variantKey";
 import { useGetAllBrandsQuery } from "../../features/Brand/brandApi";
 import { useGetDropdownCategoriesQuery } from "../../features/category/categoryApi";
 import { useCreateProductMutation } from "../../features/product/productApi";
@@ -45,43 +45,7 @@ const CreateProduct = () => {
   });
   const [createProduct, { isLoading }] = useCreateProductMutation();
   const onSubmit = async (data) => {
-    // Variants handle
-    const variants = Object.entries(variantData).map(([key, variant]) => {
-      if (key === "single") {
-        return {
-          sku: variant.sku || "",
-          price: variant.price || "",
-          discountPrice: variant.discountPrice || "",
-          discountStartDate: variant.discountStartDate || "",
-          discountEndDate: variant.discountEndDate || "",
-          stock: variant.stock || "",
-          availability: variant.availability !== false,
-        };
-      } else {
-        const attributeValues = variant._originalValues || key.split("|");
-        const variantObj = {
-          sku: variant.sku || "",
-          price: variant.price || "",
-          discountPrice: variant.discountPrice || "",
-          discountStartDate: variant.discountStartDate || "",
-          discountEndDate: variant.discountEndDate || "",
-          stock: variant.stock || "",
-          availability: variant.availability !== false,
-        };
-
-        // add attribute values dynamically
-        attributes.forEach((attr, index) => {
-          if (attributeValues[index]) {
-            variantObj[attr.name] =
-              variant._originalValues?.[index] ||
-              findOriginalVariantValue(attr.values, attributeValues[index]) ||
-              attributeValues[index];
-          }
-        });
-
-        return variantObj;
-      }
-    });
+    const variants = buildVariantsFromCurrentRows(attributes, variantData);
 
     try {
       const formData = await buildProductFormData(data, attributes, variants);

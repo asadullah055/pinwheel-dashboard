@@ -11,7 +11,7 @@ import PriceStockVariants from "../../components/Product/PriceStockVariants";
 import ProductDescription from "../../components/Product/ProductDescription";
 import SEOMeatData from "../../components/Product/SEOMeatData";
 import ServiceWarranty from "../../components/Product/ServiceWarranty";
-import { findOriginalVariantValue, getVariantKey } from "../../components/Product/variantKey";
+import { buildVariantsFromCurrentRows, getVariantKey } from "../../components/Product/variantKey";
 
 // API Hooks
 import { useGetAllBrandsQuery } from "../../features/Brand/brandApi";
@@ -133,7 +133,7 @@ export default function UpdateProduct() {
     const tempVariantData = {};
 
 
-    p.variants.forEach((v, index) => {
+    p.variants.forEach((v) => {
       let key = "single";
 
       if (productAttrs.length > 0) {
@@ -173,48 +173,7 @@ export default function UpdateProduct() {
 
   // SUBMIT HANDLER
   const onSubmit = async (data) => {
-    const variants = Object.entries(variantData).map(([key, variant]) => {
-      if (key === "single") {
-        return {
-          sku: variant.sku,
-          price: variant.price,
-          discountPrice: variant.discountPrice,
-          discountStartDate: variant.discountStartDate,
-          discountEndDate: variant.discountEndDate,
-          stock: variant.stock,
-          availability: variant.availability !== false,
-        };
-      } else {
-        // Split the lowercase key
-        const lowercaseValues = key.split("|");
-
-        const variantObj = {
-          sku: variant.sku,
-          price: variant.price,
-          discountPrice: variant.discountPrice,
-          discountStartDate: variant.discountStartDate,
-          discountEndDate: variant.discountEndDate,
-          stock: variant.stock,
-          availability: variant.availability !== false,
-        };
-
-        // 🔥 FIX: Map lowercase values back to original case from attributes
-        attributes.forEach((attr, index) => {
-          if (lowercaseValues[index]) {
-            // Find the original case value from attribute.values
-            const originalValue = findOriginalVariantValue(
-              attr.values,
-              lowercaseValues[index]
-            );
-
-            // Use original case value for database
-            variantObj[attr.name] = originalValue || lowercaseValues[index];
-          }
-        });
-
-        return variantObj;
-      }
-    });
+    const variants = buildVariantsFromCurrentRows(attributes, variantData);
 
     try {
       const formData = await buildProductFormData(

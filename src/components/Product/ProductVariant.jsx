@@ -1,7 +1,6 @@
-import { getGroupedRows } from './createProductHelpers';
 import VariantApplyAllBar from './VariantApplyAllBar';
 import VariantAttributeForm from './VariantAttributeForm';
-import { getSafeSkuSuffix, getVariantKey } from './variantKey';
+import { getCurrentVariantRows, getSafeSkuSuffix, getVariantKey } from './variantKey';
 import { validatePrice } from './variantHelpers';
 import VariantTable from './VariantTable';
 
@@ -27,7 +26,7 @@ export default function ProductVariant({ attributes, setAttributes, variantData,
   const removeAttrValue = (aIdx, vIdx) =>
     setAttributes(attributes.map((a, i) => (i === aIdx ? { ...a, values: a.values.filter((_, j) => j !== vIdx) } : a)));
 
-  const rows = attributes.every(a => a.values.length === 0) ? [] : getGroupedRows(attributes);
+  const rows = getCurrentVariantRows(attributes);
   const totalVariants = rows.length || 1;
   const handleChange = (key, field, value) => {
     setVariantData(prev => ({
