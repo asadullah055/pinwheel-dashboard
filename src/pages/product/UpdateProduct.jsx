@@ -60,7 +60,7 @@ export default function UpdateProduct() {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
       warrantyType: "no warranty",
@@ -216,17 +216,15 @@ export default function UpdateProduct() {
       }
     });
 
-
-    const formData = buildProductFormData(
-      data,
-      attributes,
-      variants,
-      description,
-      shortDescription
-    );
-    formData.append("productId", productId);
-
     try {
+      const formData = await buildProductFormData(
+        data,
+        attributes,
+        variants,
+        description,
+        shortDescription
+      );
+      formData.append("productId", productId);
       const res = await updateProduct({ id: productId, data: formData }).unwrap();
       toast.success(res?.message || "Product updated successfully");
     } catch (err) {
@@ -276,10 +274,10 @@ export default function UpdateProduct() {
 
         <button
           type="submit"
-          disabled={updating}
+          disabled={updating || isSubmitting}
           className="bg-blue-600 text-white px-6 py-2 rounded"
         >
-          {updating ? <Loading text={"Updating..."} /> : "Update Product"}
+          {updating || isSubmitting ? <Loading text={"Updating..."} /> : "Update Product"}
         </button>
       </form>
     </div>

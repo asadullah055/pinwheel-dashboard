@@ -24,7 +24,6 @@ export default [
       "react-refresh": reactRefresh,
     },
     rules: {
-      "eslint-disable-next-line no-unused-vars": false,
       ...js.configs.recommended.rules,
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,

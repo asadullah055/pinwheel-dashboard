@@ -34,7 +34,7 @@ const CreateProduct = () => {
   const { data: categoryData } = useGetDropdownCategoriesQuery();
   const listCategories = categoryData?.categories || [];
   const listAllBrands = brandData?.brands || [];
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { control, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     defaultValues: {
       warrantyType: "no warranty",
       shippingInsideDhaka: "80",
@@ -83,10 +83,8 @@ const CreateProduct = () => {
       }
     });
 
-
-    const formData = buildProductFormData(data, attributes, variants);
-
     try {
+      const formData = await buildProductFormData(data, attributes, variants);
       const res = await createProduct(formData).unwrap();
       toast.success(res?.message || "Product created successfully");
       navigate("/product/list");
@@ -128,9 +126,9 @@ const CreateProduct = () => {
         <SEOMeatData control={control} errors={errors} />
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || isSubmitting}
           className="bg-blue-600 text-white px-6 py-2 rounded">
-          {isLoading ? <Loading text={"Submitting...."} /> : "Submit"}
+          {isLoading || isSubmitting ? <Loading text={"Submitting...."} /> : "Submit"}
         </button>
       </form>
     </div>

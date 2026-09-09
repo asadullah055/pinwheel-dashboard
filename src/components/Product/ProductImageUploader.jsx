@@ -3,6 +3,9 @@ import toast from "react-hot-toast";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { GoPlus } from "react-icons/go";
 
+const MAX_IMAGE_SIZE_BYTES = 500 * 1024;
+const MAX_IMAGE_SIZE_MESSAGE = "Image size must be 500 KB or less.";
+
 const ProductImageUploader = ({ images = [], setImages }) => {
   const fileInputRef = useRef(null);
   const [imageUrls, setImageUrls] = useState([]);
@@ -41,17 +44,31 @@ const ProductImageUploader = ({ images = [], setImages }) => {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
 
-    if (files.length + images.length > 5) {
+    const validFiles = files.filter((file) => file.size <= MAX_IMAGE_SIZE_BYTES);
+    const hasOversizedFile = validFiles.length !== files.length;
+
+    if (hasOversizedFile) {
+      toast.error(MAX_IMAGE_SIZE_MESSAGE);
+    }
+
+    if (validFiles.length === 0) {
+      e.target.value = "";
+      return;
+    }
+
+    if (validFiles.length + images.length > 5) {
       toast.error("You can only upload a maximum of 5 images.");
+      e.target.value = "";
       return;
     }
 
     // Don't modify the original files
-    const newFiles = files.map(file => {
+    const newFiles = validFiles.map(file => {
       return file;
     });
 
     setImages([...images, ...newFiles]);
+    e.target.value = "";
   };
 
   const handleAddClick = () => {
