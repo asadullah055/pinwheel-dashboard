@@ -134,12 +134,24 @@ export const buildProductFormData = async (data, attributes, variants) => {
   formData.append("seoContent", data.seoContent || "");
 
   const existingImages = [];
+  const seenImages = new Set();
+  const seenFiles = new Set();
+  const addImage = (imageUrl) => {
+    if (!imageUrl || seenImages.has(imageUrl)) return;
+    seenImages.add(imageUrl);
+    existingImages.push(imageUrl);
+  };
+
   for (const img of data.images || []) {
     if (img instanceof File) {
+      const fileKey = `${img.name}-${img.size}-${img.lastModified}`;
+      if (seenFiles.has(fileKey)) continue;
+      seenFiles.add(fileKey);
+
       const imageUrl = await uploadImageToCloudinary(img);
-      existingImages.push(imageUrl);
+      addImage(imageUrl);
     } else if (typeof img === "string") {
-      existingImages.push(img);
+      addImage(img);
     }
   }
   formData.append("existingImages", JSON.stringify(existingImages));

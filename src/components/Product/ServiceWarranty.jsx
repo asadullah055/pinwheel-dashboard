@@ -60,7 +60,6 @@ const ServiceWarranty = ({ errors, control }) => {
                                 title="Warranty Policy"
                                 name="warrantyPolicy"
                                 control={control}
-                                rules={{ required: "Warranty Policy is required" }}
                                 error={errors.warrantyPolicy}
                             />
                         </FieldSet>
