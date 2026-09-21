@@ -17,7 +17,9 @@ const formatDate = (value) => {
 const formatAddress = (address) => {
   if (!address) return "N/A";
 
-  return [
+  if (address.fullAddress) return address.fullAddress;
+
+  const formattedAddress = [
     address.street,
     address.area,
     address.upazila,
@@ -27,6 +29,8 @@ const formatAddress = (address) => {
   ]
     .filter(Boolean)
     .join(", ");
+
+  return formattedAddress || "N/A";
 };
 
 const formatAttributes = (attributes) => {
