@@ -5,6 +5,7 @@ import { GoPlus } from "react-icons/go";
 
 const MAX_IMAGE_SIZE_BYTES = 500 * 1024;
 const MAX_IMAGE_SIZE_MESSAGE = "Image size must be 500 KB or less.";
+const MAX_PRODUCT_IMAGES = 8;
 
 const ProductImageUploader = ({ images = [], setImages }) => {
   const fileInputRef = useRef(null);
@@ -56,8 +57,8 @@ const ProductImageUploader = ({ images = [], setImages }) => {
       return;
     }
 
-    if (validFiles.length + images.length > 5) {
-      toast.error("You can only upload a maximum of 5 images.");
+    if (validFiles.length + images.length > MAX_PRODUCT_IMAGES) {
+      toast.error(`You can only upload a maximum of ${MAX_PRODUCT_IMAGES} images.`);
       e.target.value = "";
       return;
     }
@@ -148,7 +149,7 @@ const ProductImageUploader = ({ images = [], setImages }) => {
           );
         })}
 
-        {images.length < 5 && (
+        {images.length < MAX_PRODUCT_IMAGES && (
           <div
             onClick={handleAddClick}
             className="w-28 h-28 flex items-center justify-center border-2 border-dashed border-gray-300 text-gray-600 cursor-pointer rounded hover:border-gray-400"
@@ -166,6 +167,9 @@ const ProductImageUploader = ({ images = [], setImages }) => {
           className="hidden"
         />
       </div>
+      <p className="mt-2 text-xs text-gray-500">
+        {images.length}/{MAX_PRODUCT_IMAGES} images selected
+      </p>
     </div>
   );
 };

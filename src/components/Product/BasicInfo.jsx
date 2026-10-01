@@ -51,7 +51,12 @@ const BasicInfo = ({ control, errors, listCategories, listAllBrands }) => {
                         <Controller
                             name="images"
                             control={control}
-                            rules={{ required: "Product Images are required" }}
+                            rules={{
+                                required: "Product Images are required",
+                                validate: (images) =>
+                                    (images?.length || 0) <= 8 ||
+                                    "A product can have a maximum of 8 images",
+                            }}
                             render={({ field }) => (
                                 <ProductImageUploader
                                     images={field.value || []}

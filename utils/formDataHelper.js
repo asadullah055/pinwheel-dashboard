@@ -6,6 +6,7 @@ const INITIAL_QUALITY = 0.82;
 const MIN_QUALITY = 0.58;
 const MAX_UPLOAD_BYTES = 500 * 1024;
 const MAX_IMAGE_SIZE_MESSAGE = "Image size must be 500 KB or less.";
+const MAX_PRODUCT_IMAGES = 8;
 
 const getImageFileName = (file, extension = "webp") => {
   const baseName = file.name?.replace(/\.[^.]+$/, "") || "product-image";
@@ -119,6 +120,11 @@ const uploadImageToCloudinary = async (file) => {
 
 export const buildProductFormData = async (data, attributes, variants) => {
   const formData = new FormData();
+  const productImages = Array.isArray(data.images) ? data.images : [];
+
+  if (productImages.length > MAX_PRODUCT_IMAGES) {
+    throw new Error(`A product can have a maximum of ${MAX_PRODUCT_IMAGES} images.`);
+  }
 
   formData.append("productName", data.productName);
   formData.append("category", data.category);
@@ -142,7 +148,7 @@ export const buildProductFormData = async (data, attributes, variants) => {
     existingImages.push(imageUrl);
   };
 
-  for (const img of data.images || []) {
+  for (const img of productImages) {
     if (img instanceof File) {
       const fileKey = `${img.name}-${img.size}-${img.lastModified}`;
       if (seenFiles.has(fileKey)) continue;
@@ -153,6 +159,10 @@ export const buildProductFormData = async (data, attributes, variants) => {
     } else if (typeof img === "string") {
       addImage(img);
     }
+  }
+
+  if (existingImages.length > MAX_PRODUCT_IMAGES) {
+    throw new Error(`A product can have a maximum of ${MAX_PRODUCT_IMAGES} images.`);
   }
   formData.append("existingImages", JSON.stringify(existingImages));
 
